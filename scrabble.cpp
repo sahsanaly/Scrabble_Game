@@ -10,12 +10,16 @@ int main(void)
    LinkedList *list = new LinkedList();
    delete list;
 
+   // Print banner
    std::cout << "Welcome to Scrabble!" << std::endl;
    std::cout << "-------------------" << std::endl;
 
    bool terminate = false;
+
+   // Main loop
    while (!terminate)
    {
+      // Print Menu
       std::cout
           << "Menu" << std::endl
           << "----" << std::endl
@@ -24,6 +28,7 @@ int main(void)
           << "3. Credits (Show student information)" << std::endl
           << "4. Quit" << std::endl;
 
+      // Get user input
       int userInput;
       std::cin >> userInput;
       std::cout << std::endl;
@@ -40,6 +45,7 @@ int main(void)
       }
       if (userInput == 3)
       {
+         // Print credits
          std::cout
              << "--------------------------------------" << std::endl
              << "Name: Syed Ali" << std::endl
@@ -61,6 +67,7 @@ int main(void)
       }
       if (userInput == 4)
       {
+         // Quit
          std::cout << "Goodbye" << std::endl;
          terminate = true;
       }
