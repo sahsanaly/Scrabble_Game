@@ -355,3 +355,6 @@ MigrationBackup/
 # Build files
 *.o
 scrabble
+
+
+.vscode
