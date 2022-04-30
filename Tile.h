@@ -8,10 +8,13 @@ typedef char Letter;
 // Define a Value type
 typedef int Value;
 
-class Tile {
+class Tile
+{
+   Tile(Letter letter);
+
 public:
    Letter letter;
-   Value  value;
+   Value value;
 };
 
 #endif // ASSIGN2_TILE_H
