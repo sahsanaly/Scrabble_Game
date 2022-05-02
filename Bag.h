@@ -22,7 +22,7 @@ public:
    bool shuffle();
 
    // Convert Bag to string
-   std::string convertToString();
+   std::string getAsString();
 
    LinkedList tilesInBag;
 };
