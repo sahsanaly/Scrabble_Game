@@ -58,7 +58,7 @@ int LinkedList::search(Tile *tile)
 
 void LinkedList::remove(int index)
 {
-   if (index > this->length)
+   if (index > this->length && index > 0)
    {
       throw std::out_of_range("Index out of range");
    }
@@ -110,7 +110,7 @@ void LinkedList::remove(int index)
 void LinkedList::insert(int index, Tile *tile)
 {
    Node *insertedNode = new Node(tile, nullptr, nullptr);
-   if (index > this->length)
+   if (index - 1 > this->length && index > 0)
    {
       throw std::out_of_range("Index out of range");
    }
@@ -160,7 +160,7 @@ void LinkedList::insert(int index, Tile *tile)
 Node *LinkedList::traverse(int index)
 {
    Node *returnValue;
-   if (index < this->length)
+   if (index < this->length && index > 0)
    {
       // If the index is closer to the length, descend. If the index is closer to 0, ascend.
       if (this->length - index < this->length / 2)
