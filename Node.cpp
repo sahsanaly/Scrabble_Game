@@ -1,7 +1,7 @@
 
 #include "Node.h"
 
-Node::Node(Tile *tile, Node *next, Node *prev)
+Node::Node(std::shared_ptr<Tile> tile, std::shared_ptr<Node> next, std::shared_ptr<Node> prev)
 {
    this->tile = tile;
    this->next = next;
@@ -17,5 +17,5 @@ Node::Node(Node &other)
 
 Node::~Node()
 {
-   delete this->tile;
+   // Smart pointers deal with everything
 }

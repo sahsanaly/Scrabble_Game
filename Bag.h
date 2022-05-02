@@ -9,14 +9,13 @@ class Bag
 {
 public:
    Bag();
-   Bag(Bag &other);
    ~Bag();
 
    // Add specific tile to the tail of the Bag
-   bool addTile(Tile* tile);
-   
+   bool addTile(std::shared_ptr<Tile> tile);
+
    // Grab the head tile.
-   Tile* drawTile();
+   std::shared_ptr<Tile> drawTile();
 
    // Shuffle the bag (by default during initiation)
    bool shuffle();
@@ -24,6 +23,7 @@ public:
    // Convert Bag to string
    std::string getAsString();
 
+private:
    LinkedList tilesInBag;
 };
 

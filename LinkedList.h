@@ -3,6 +3,7 @@
 #define ASSIGN2_LINKEDLIST_H
 
 #include "Node.h"
+#include <memory>
 
 // A list of Tiles
 class LinkedList
@@ -11,16 +12,16 @@ public:
    LinkedList();
    ~LinkedList();
    int getLength();
-   Tile *get(int index);
-   int search(Tile *tile);
+   std::shared_ptr<Tile> get(int index);
+   int search(std::shared_ptr<Tile> tile);
    void remove(int index);
-   void insert(int index, Tile *tile);
+   void insert(int index, std::shared_ptr<Tile> tile);
    void print();
 
 private:
-   Node *traverse(int index);
-   Node *head;
-   Node *tail;
+   std::shared_ptr<Node> traverse(int index);
+   std::shared_ptr<Node> head;
+   std::shared_ptr<Node> tail;
    int length;
 };
 
