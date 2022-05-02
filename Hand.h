@@ -19,6 +19,7 @@ public:
    // Find the first tile with the desired letter and return its pointer. Return NULL if not found.
    Tile* getTile(char letter);
 
+private:
    LinkedList tilesInHand;
 };
 
