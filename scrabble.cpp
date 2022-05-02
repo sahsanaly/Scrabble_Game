@@ -61,8 +61,19 @@ int main(void)
           << "4. Quit" << std::endl;
 
       // Get user input
-      int userInput;
-      std::cin >> userInput;
+      std::string rawUserInput;
+
+      // Prevents the wierd repeating buffer issue
+      int userInput = 0;
+      try
+      {
+         std::cin >> rawUserInput;
+         userInput = std::stoi(rawUserInput);
+      }
+      catch (std::invalid_argument &unused)
+      {
+         // Nothing needs to be done, userInput defaults to 0, which will trigger the "invalid input" condition
+      }
       std::cout << std::endl;
 
       if (userInput == 1)
@@ -70,12 +81,12 @@ int main(void)
          // Create a new game
          std::cout << "Not yet implemented!" << std::endl;
       }
-      if (userInput == 2)
+      else if (userInput == 2)
       {
          // Load a game
          std::cout << "Not yet implemented!" << std::endl;
       }
-      if (userInput == 3)
+      else if (userInput == 3)
       {
          // Print credits
          std::cout
@@ -97,11 +108,15 @@ int main(void)
              << "Email: s3906025@student.rmit.edu.au" << std::endl
              << "--------------------------------------" << std::endl;
       }
-      if (userInput == 4)
+      else if (userInput == 4)
       {
          // Quit
          std::cout << "Goodbye" << std::endl;
          terminate = true;
+      }
+      else
+      {
+         std::cout << "Invalid input, please input a valid number between 1-4" << std::endl;
       }
 
       std::cout << std::endl;
