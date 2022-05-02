@@ -1,4 +1,7 @@
 #include <string>
+#include "Player.h"
+#include "Board.h"
+#include "Bag.h"
 
 class Player;
 class Board;
