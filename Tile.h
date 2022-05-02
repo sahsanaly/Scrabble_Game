@@ -12,9 +12,9 @@ class Tile
 {
 public:
    Tile();
-   Tile(Letter letter, int value);
+   Tile(Letter letter);
    Letter letter;
-   Value value;
+   int Tile::getValue();
 };
 
 #endif // ASSIGN2_TILE_H
