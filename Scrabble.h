@@ -38,4 +38,4 @@ private:
 
     // Save the game to indicated save file
     bool saveGame(std::string initialCommand);
-}
+};
