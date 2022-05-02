@@ -1,11 +1,10 @@
+#ifndef ASSIGN2_SCRABBLE_H
+#define ASSIGN2_SCRABBLE_H
+
 #include <string>
 #include "Player.h"
 #include "Board.h"
 #include "Bag.h"
-
-class Player;
-class Board;
-class Bag;
 
 class Scrabble
 {
@@ -42,3 +41,5 @@ private:
     // Save the game to indicated save file
     bool saveGame(std::string initialCommand);
 };
+
+#endif

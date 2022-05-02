@@ -1,7 +1,9 @@
+#ifndef ASSIGN2_BOARD_H
+#define ASSIGN2_BOARD_H
+
 #include <vector>
 #include "Tile.h"
 #include <string>
-#define BOARD_SIZE
 
 class Board
 {
@@ -13,3 +15,5 @@ public:
 private:
     std::vector<std::vector<Tile>> board;
 };
+
+#endif
