@@ -12,7 +12,17 @@ LinkedList::LinkedList()
 
 LinkedList::~LinkedList()
 {
-   // Smart pointers take care of this for us
+   // Smart pointers mostly take care of this, but will not delete themselves if they
+   // still have references to each other. We can ensure they don't by setting the references to null.
+   std::shared_ptr<Node> currentNode = this->head;
+   while (currentNode != nullptr)
+   {
+      std::shared_ptr<Node> nextNode = currentNode->next;
+      currentNode->prev = nullptr;
+      currentNode->next = nullptr;
+      currentNode->tile = nullptr;
+      currentNode = nextNode;
+   }
 }
 
 int LinkedList::getLength()
