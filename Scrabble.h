@@ -2,6 +2,7 @@
 #define ASSIGN2_SCRABBLE_H
 
 #include <string>
+#include <memory>
 #include "Player.h"
 #include "Board.h"
 #include "Bag.h"
@@ -13,6 +14,8 @@ public:
     Scrabble();
     // Save game loader
     Scrabble(std::string saveFileName);
+
+    ~Scrabble();
     // Main game loop.
     // Loops until either:
     //      A player wins
@@ -21,8 +24,10 @@ public:
     void mainLoop();
 
 private:
-    Player player1;
-    Player player2;
+    // Making these pointers allows them to be initialised in the constructor, rather than before.
+    // If there is a better solution, it should be taken.
+    std::shared_ptr<Player> player1;
+    std::shared_ptr<Player> player2;
     Board board;
     Bag bag;
 
