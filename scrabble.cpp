@@ -1,47 +1,13 @@
 
+#include "Scrabble.h"
 #include "LinkedList.h"
 
 #include <iostream>
 
 #define EXIT_SUCCESS 0
 
-// I typed out the values, not really sure where to put them though. Leaving them here till we have a use for them.
-/* // Define the letter values
-    std::map<Letter, int> letter_values = {
-        {'A', 1},
-        {'E', 1},
-        {'I', 1},
-        {'O', 1},
-        {'U', 1},
-        {'L', 1},
-        {'N', 1},
-        {'S', 1},
-        {'T', 1},
-        {'R', 1},
-        {'D', 2},
-        {'G', 2},
-        {'B', 3},
-        {'C', 3},
-        {'M', 3},
-        {'P', 3},
-        {'F', 4},
-        {'H', 4},
-        {'V', 4},
-        {'W', 4},
-        {'Y', 4},
-        {'K', 5},
-        {'J', 8},
-        {'X', 8},
-        {'Q', 10},
-        {'Z', 10},
-    };
-    */
-
 int main(void)
 {
-   LinkedList *list = new LinkedList();
-   delete list;
-
    // Print banner
    std::cout << "Welcome to Scrabble!" << std::endl;
    std::cout << "-------------------" << std::endl;
@@ -78,7 +44,9 @@ int main(void)
 
       if (userInput == 1)
       {
-         // Create a new game
+         Scrabble game;
+         game.mainLoop();
+
          std::cout << "Not yet implemented!" << std::endl;
       }
       else if (userInput == 2)
