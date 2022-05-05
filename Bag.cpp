@@ -35,9 +35,10 @@ void Bag::shuffle()
     {
         int storageSize = this->tilesInBag.getLength() - virtualBoundary;
 
-        int indexToMove = (std::rand() % (storageSize - 1)) + virtualBoundary;
+        int indexToMove = (std::rand() % (storageSize)) + virtualBoundary;
 
         std::shared_ptr<Tile> tile = this->tilesInBag.get(indexToMove);
+        this->tilesInBag.remove(indexToMove);
         this->tilesInBag.insert(0, tile);
     }
 }
