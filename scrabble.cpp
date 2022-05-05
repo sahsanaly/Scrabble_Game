@@ -1,6 +1,7 @@
 
 #include "Scrabble.h"
 #include "LinkedList.h"
+#include "userInput.h"
 
 #include <iostream>
 
@@ -30,11 +31,11 @@ int main(void)
       std::string rawUserInput;
 
       // Prevents the wierd repeating buffer issue
-      int userInput = 0;
+      int intUserInput = 0;
       try
       {
-         std::cin >> rawUserInput;
-         userInput = std::stoi(rawUserInput);
+         rawUserInput = userInput();
+         intUserInput = std::stoi(rawUserInput);
       }
       catch (std::invalid_argument &unused)
       {
@@ -42,19 +43,17 @@ int main(void)
       }
       std::cout << std::endl;
 
-      if (userInput == 1)
+      if (intUserInput == 1)
       {
          Scrabble game;
          game.mainLoop();
-
-         std::cout << "Not yet implemented!" << std::endl;
       }
-      else if (userInput == 2)
+      else if (intUserInput == 2)
       {
          // Load a game
          std::cout << "Not yet implemented!" << std::endl;
       }
-      else if (userInput == 3)
+      else if (intUserInput == 3)
       {
          // Print credits
          std::cout
@@ -76,7 +75,7 @@ int main(void)
              << "Email: s3906025@student.rmit.edu.au" << std::endl
              << "--------------------------------------" << std::endl;
       }
-      else if (userInput == 4)
+      else if (intUserInput == 4)
       {
          // Quit
          std::cout << "Goodbye" << std::endl;
