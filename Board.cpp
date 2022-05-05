@@ -9,7 +9,6 @@ Board::Board()
 
     for (int i = 0; i < BOARD_SIZE; i++)
     {
-        std::cout << i << std::endl;
         this->board.push_back(std::vector<std::shared_ptr<Tile>>());
         for (int j = 0; j < BOARD_SIZE; j++)
         {
