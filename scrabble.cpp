@@ -123,7 +123,8 @@ int main(void)
          testHand->addTile(newTile);
 
          std::cout << std::string(*testHand) << std::endl;
-         std::cout << testHand->getAsString() << std::endl;
+
+         testHand->print();
 
          // std::cout << testHand->getTile('A')->getValue() << std::endl;
 
