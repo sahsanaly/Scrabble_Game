@@ -29,6 +29,8 @@ public:
    // Print the String format of the Hand.
    void print();
 
+   operator std::string();
+
 private:
    LinkedList tilesInHand;
 };
