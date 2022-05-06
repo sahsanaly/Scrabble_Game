@@ -89,11 +89,18 @@ int main(void)
          std::shared_ptr<Hand> testHand = std::make_shared<Hand>();
 
          std::shared_ptr<Tile> newTile = std::make_shared<Tile>('A');
+         std::shared_ptr<Tile> newTile2 = std::make_shared<Tile>('A');
+         std::shared_ptr<Tile> newTile3 = std::make_shared<Tile>('C');
          testHand->addTile(newTile);
+         testHand->addTile(newTile2);
+         testHand->addTile(newTile3);
 
          std::cout << std::string(*testHand) << std::endl;
-         std::cout << testHand->getAsString() << std::endl;
-         testHand->print();
+         std::cout << std::endl;
+
+         std::cout << testHand->getNumberOfTilesWithLetter('A') << std::endl;
+         std::cout << testHand->getNumberOfTilesWithLetter('B') << std::endl;
+         std::cout << testHand->getNumberOfTilesWithLetter('C') << std::endl;
 
          // std::cout << testHand->getTile('A')->getValue() << std::endl;
 
