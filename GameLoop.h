@@ -1,18 +1,21 @@
-#ifndef ASSIGN2_SCRABBLE_H
-#define ASSIGN2_SCRABBLE_H
+#ifndef ASSIGN2_GAMELOOP_H
+#define ASSIGN2_GAMELOOP_H
 
 #include <string>
+#include <memory>
 #include "Player.h"
 #include "Board.h"
 #include "Bag.h"
 
-class Scrabble
+class GameLoop
 {
 public:
     // Default loader
-    Scrabble();
+    GameLoop();
     // Save game loader
-    Scrabble(std::string saveFileName);
+    GameLoop(std::string saveFileName);
+
+    ~GameLoop();
     // Main game loop.
     // Loops until either:
     //      A player wins
@@ -21,8 +24,10 @@ public:
     void mainLoop();
 
 private:
-    Player player1;
-    Player player2;
+    // Making these pointers allows them to be initialised in the constructor, rather than before.
+    // If there is a better solution, it should be taken.
+    std::vector<std::shared_ptr<Player>> players;
+
     Board board;
     Bag bag;
 

@@ -3,17 +3,19 @@
 
 #include <vector>
 #include "Tile.h"
+#include <memory>
 #include <string>
 
 class Board
 {
 public:
-    Tile getTile(char coord1, int coord2);
-    void setTile(char coord1, int coord2, Tile tile);
+    Board();
+    std::shared_ptr<Tile> getTile(char coord1, int coord2);
+    void setTile(char coord1, int coord2, std::shared_ptr<Tile> tile);
     std::string convertToString();
 
 private:
-    std::vector<std::vector<Tile>> board;
+    std::vector<std::vector<std::shared_ptr<Tile>>> board;
 };
 
 #endif

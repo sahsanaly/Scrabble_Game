@@ -91,7 +91,6 @@ void LinkedList::remove(int index)
       {
          // We can use the code from this.traverse() to perform the traversal
          std::shared_ptr<Node> deletionNode = this->traverse(index);
-         std::cout << this->length << std::endl;
          deletionNode->next->prev = deletionNode->prev;
          deletionNode->prev->next = deletionNode->next;
       }

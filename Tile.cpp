@@ -16,6 +16,7 @@ Tile::Tile(Letter letter)
 int Tile::getValue()
 {
     std::map<Letter, int> letter_values = {
+        {(char)0, 0}, // This is just to allow the blank tiles before players place anything.
         {'A', 1},
         {'E', 1},
         {'I', 1},
@@ -46,5 +47,3 @@ int Tile::getValue()
 
     return letter_values[this->letter];
 }
-
-// Empty... for now?

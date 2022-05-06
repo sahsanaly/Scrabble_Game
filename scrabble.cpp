@@ -1,47 +1,15 @@
-#include "LinkedList.h"
+
 #include "Hand.h"
+#include "GameLoop.h"
+#include "LinkedList.h"
+#include "userInput.h"
 
 #include <iostream>
 
 #define EXIT_SUCCESS 0
 
-// I typed out the values, not really sure where to put them though. Leaving them here till we have a use for them.
-/* // Define the letter values
-    std::map<Letter, int> letter_values = {
-        {'A', 1},
-        {'E', 1},
-        {'I', 1},
-        {'O', 1},
-        {'U', 1},
-        {'L', 1},
-        {'N', 1},
-        {'S', 1},
-        {'T', 1},
-        {'R', 1},
-        {'D', 2},
-        {'G', 2},
-        {'B', 3},
-        {'C', 3},
-        {'M', 3},
-        {'P', 3},
-        {'F', 4},
-        {'H', 4},
-        {'V', 4},
-        {'W', 4},
-        {'Y', 4},
-        {'K', 5},
-        {'J', 8},
-        {'X', 8},
-        {'Q', 10},
-        {'Z', 10},
-    };
-    */
-
 int main(void)
 {
-   LinkedList *list = new LinkedList();
-   delete list;
-
    // Print banner
    std::cout << "Welcome to Scrabble!" << std::endl;
    std::cout << "-------------------" << std::endl;
@@ -64,11 +32,11 @@ int main(void)
       std::string rawUserInput;
 
       // Prevents the wierd repeating buffer issue
-      int userInput = 0;
+      int intUserInput = 0;
       try
       {
-         std::cin >> rawUserInput;
-         userInput = std::stoi(rawUserInput);
+         rawUserInput = userInput();
+         intUserInput = std::stoi(rawUserInput);
       }
       catch (std::invalid_argument &unused)
       {
@@ -76,17 +44,17 @@ int main(void)
       }
       std::cout << std::endl;
 
-      if (userInput == 1)
+      if (intUserInput == 1)
       {
-         // Create a new game
-         std::cout << "Not yet implemented!" << std::endl;
+         GameLoop game;
+         game.mainLoop();
       }
-      else if (userInput == 2)
+      else if (intUserInput == 2)
       {
          // Load a game
          std::cout << "Not yet implemented!" << std::endl;
       }
-      else if (userInput == 3)
+      else if (intUserInput == 3)
       {
          // Print credits
          std::cout
@@ -108,13 +76,13 @@ int main(void)
              << "Email: s3906025@student.rmit.edu.au" << std::endl
              << "--------------------------------------" << std::endl;
       }
-      else if (userInput == 4)
+      else if (intUserInput == 4)
       {
          // Quit
          std::cout << "Goodbye" << std::endl;
          terminate = true;
       }
-      else if (userInput == 5)
+      else if (intUserInput == 5)
       {
          std::cout << "Running Hand test..." << std::endl;
          std::shared_ptr<Hand> testHand = std::make_shared<Hand>();

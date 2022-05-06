@@ -18,7 +18,7 @@ public:
    std::shared_ptr<Tile> drawTile();
 
    // Shuffle the bag (by default during initiation)
-   bool shuffle();
+   void shuffle();
 
    // Convert Bag to string
    std::string getAsString();
