@@ -34,10 +34,38 @@ GameLoop::GameLoop()
 
     for (int playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++)
     {
-        // TODO: Still need to check playername is valid
         std::cout << "Enter a name for player " << playerIndex + 1 << " (uppercase characters only)" << std::endl;
-        std::string player1Name = userInput();
-        this->players.push_back(std::make_shared<Player>(player1Name));
+
+        std::string playerName = userInput();
+
+        bool isPlayerNameValid = false;
+        
+        while (!isPlayerNameValid)
+        {
+            isPlayerNameValid = true;
+            if (playerName.length() <= 0)
+            {
+                isPlayerNameValid = false;
+            }
+            else
+            {
+                for (int i = 0; i < playerName.length(); i++)
+                {
+                    char charInName = playerName.at(i);
+                    if (!isupper(charInName))
+                    {
+                        isPlayerNameValid = false;
+                    }
+                }
+            }
+            if (!isPlayerNameValid)
+            {
+                std::cout << "The name you entered was not in uppercase (or you didn't enter anything!)." << std::endl << "Please try again." << std::endl;
+                playerName = userInput();
+            }
+        }
+        
+        this->players.push_back(std::make_shared<Player>(playerName));
         std::cout << std::endl;
     }
 
