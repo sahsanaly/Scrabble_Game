@@ -14,7 +14,9 @@ public:
 
    // Add specific tile to hand
    void addTile(std::shared_ptr<Tile> tile);
+   
    // Remove tile from hand
+   void removeTile(Letter letter);
    void removeTile(std::shared_ptr<Tile> tile);
    
    // Find the first tile with the desired letter and return its pointer. Return NULL if not found.

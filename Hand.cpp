@@ -22,11 +22,18 @@ void Hand::addTile(std::shared_ptr<Tile> tile)
     return;
 }
 
-void Hand::removeTile(std::shared_ptr<Tile> tile) 
+void Hand::removeTile(Letter letter) 
 {
-    int indexTileInHand = tilesInHand->search(tile);
+    // Search for the first tile with given letter.
+    int indexTileInHand = tilesInHand->search(letter);
 
     tilesInHand->remove(indexTileInHand);
+    return;
+}
+
+void Hand::removeTile(std::shared_ptr<Tile> tile) 
+{
+    removeTile(tile->letter);
     return;
 }
 
