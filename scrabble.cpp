@@ -45,7 +45,7 @@ int main(void)
 
       if (intUserInput == 1)
       {
-         Scrabble game;
+         GameLoop game;
          game.mainLoop();
       }
       else if (intUserInput == 2)
