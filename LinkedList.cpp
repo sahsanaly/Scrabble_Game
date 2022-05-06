@@ -155,7 +155,7 @@ void LinkedList::insert(int index, std::shared_ptr<Tile> tile)
 std::shared_ptr<Node> LinkedList::traverse(int index)
 {
    std::shared_ptr<Node> returnValue;
-   if (index < this->length && index > 0)
+   if (index < this->length && index >= 0)
    {
       // If the index is closer to the length, descend. If the index is closer to 0, ascend.
       if (this->length - index < this->length / 2)
