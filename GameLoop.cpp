@@ -300,7 +300,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
     {
         for (std::tuple<Letter, char, int> tileToBePlaced : placedTiles)
         {
-            std::shared_ptr<Tile> tile = activePlayer->removeTile(std::get<0>(tileToBePlaced));
+            std::shared_ptr<Tile> tile = activePlayer->takeTile(std::get<0>(tileToBePlaced));
             std::cout << tile->getValue() << std::endl;
             activePlayer->addScore(tile->getValue());
             this->board.setTile(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), tile);
@@ -336,7 +336,7 @@ bool GameLoop::replaceTile(std::vector<std::string> initialCommand, std::shared_
         else
         {
             // Find and replace the tile with the given letter.
-            std::shared_ptr<Tile> tileToReplace = activePlayer->removeTile(letterToReplace);
+            std::shared_ptr<Tile> tileToReplace = activePlayer->takeTile(letterToReplace);
 
             // If no tile has the given letter, then the operation is unsuccessful.
             // Otherwise, complete the operation.

@@ -26,18 +26,18 @@ void Player::drawTile(std::shared_ptr<Tile> tile)
     this->hand->addTile(tile);
 }
 
-std::shared_ptr<Tile> Player::removeTile(std::shared_ptr<Tile> tile)
+std::shared_ptr<Tile> Player::takeTile(std::shared_ptr<Tile> tile)
 {
     this->hand->removeTile(tile);
 
     return tile;
 }
 
-std::shared_ptr<Tile> Player::removeTile(char letter)
+std::shared_ptr<Tile> Player::takeTile(char letter)
 {
     std::shared_ptr<Tile> tileToPlace = this->hand->getTile(letter);
 
-    removeTile(tileToPlace);
+    takeTile(tileToPlace);
 
     return tileToPlace;
 }

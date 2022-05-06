@@ -16,8 +16,10 @@ public:
    void drawTile(std::shared_ptr<Tile> tile);
 
    // Remove a certain tile from the hand and return it
-   std::shared_ptr<Tile> removeTile(std::shared_ptr<Tile> tile);
-   std::shared_ptr<Tile> removeTile(Letter letter);
+   std::shared_ptr<Tile> takeTile(std::shared_ptr<Tile> tile);
+   
+   // Remove a certain tile from the hand and return it
+   std::shared_ptr<Tile> takeTile(Letter letter);
 
    // Returns the Player's Hand.
    std::shared_ptr<Hand> getHand();
