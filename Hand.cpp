@@ -64,6 +64,18 @@ std::string Hand::getAsString()
     return handInfoAsString;
 }
 
+Hand::operator std::string()
+{
+    std::string handInfoAsString = "";
+
+    for (int i = 0; i < tilesInHand.getLength(); i++) {
+        Letter letter = tilesInHand.get(i)->letter;
+        handInfoAsString = handInfoAsString + letter;
+    }
+
+    return handInfoAsString;
+}
+
 void Hand::print()
 {
     std::string stringToPrint = getAsString();
