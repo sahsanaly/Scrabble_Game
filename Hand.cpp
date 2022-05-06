@@ -34,14 +34,13 @@ std::shared_ptr<Tile> Hand::getTile(Letter letter)
 {
     std::shared_ptr<Tile> tileToAdd = nullptr;
 
-    for (int i = 0; i < tilesInHand->getLength(); i++) {
-        std::shared_ptr<Tile> tile = tilesInHand->get(i);
+    int indexTile = this->tilesInHand->search(letter);
 
-        bool tileMatchesLetter = (tile->letter == letter);
-
-        if (tileMatchesLetter) {
-            tileToAdd = tile;
-        }
+    bool tileFound = (indexTile != -1);
+    
+    if (tileFound)
+    {
+        tileToAdd = tilesInHand->get(indexTile);
     }
 
     return tileToAdd;
