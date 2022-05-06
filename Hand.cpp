@@ -52,6 +52,11 @@ std::shared_ptr<LinkedList> Hand::getTilesInHand()
     return tilesInHand;
 }
 
+int Hand::getNumberOfTilesWithLetter(Letter letter)
+{
+    return this->tilesInHand->getNumOfOccurrences(letter);
+}
+
 std::string Hand::getAsString() 
 {
     std::string handInfoAsString = "";

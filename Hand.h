@@ -20,6 +20,9 @@ public:
    // Find the first tile with the desired letter and return its pointer. Return NULL if not found.
    std::shared_ptr<Tile> getTile(Letter letter);
 
+   // Get number of tiles
+   int getNumberOfTilesWithLetter(Letter letter);
+
    // Return all tiles in this hand.
    std::shared_ptr<LinkedList> getTilesInHand();
 

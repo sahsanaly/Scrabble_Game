@@ -78,6 +78,33 @@ int LinkedList::search(Letter letter)
    return returnValue;
 }
 
+int LinkedList::getNumOfOccurrences(Letter letter)
+{
+   int numOccurrences = 0;
+
+   if (this->head != nullptr)
+   {
+      std::shared_ptr<Node> current = this->head;
+      // Check if the head has the same letter
+      if (current->tile->letter == letter)
+      {
+         numOccurrences++;
+      }
+
+      // Loop through the rest of the list.
+      while (current->next != nullptr)
+      {
+         current = current->next;
+
+         if (current->tile->letter == letter)
+         {
+            numOccurrences++;
+         }
+      }
+   }
+   return numOccurrences;
+}
+
 void LinkedList::remove(int index)
 {
    if (index > this->length && index >= 0)

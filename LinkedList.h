@@ -15,6 +15,7 @@ public:
    std::shared_ptr<Tile> get(int index);
    int search(std::shared_ptr<Tile> tile);
    int search(Letter letter);
+   int getNumOfOccurrences(Letter letter);
    void remove(int index);
    void insert(int index, std::shared_ptr<Tile> tile);
    void print();
