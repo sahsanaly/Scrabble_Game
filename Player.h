@@ -36,11 +36,17 @@ public:
    // String representation of object
    operator std::string();
 
+   // Get the name of the player.
    std::string getName();
 
 private:
+   // Player's Hand
    std::shared_ptr<Hand> hand;
+
+   // Player's score
    int score;
+   
+   // Name of Player
    std::string name;
 };
 

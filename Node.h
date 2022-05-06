@@ -12,8 +12,13 @@ public:
    Node(Node &other);
    ~Node();
 
+   // The Tile that the Node contains
    std::shared_ptr<Tile> tile;
+
+   // The next Node in the List
    std::shared_ptr<Node> next;
+
+   // The previous Node in the List
    std::shared_ptr<Node> prev;
 };
 
