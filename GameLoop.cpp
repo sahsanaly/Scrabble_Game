@@ -11,7 +11,7 @@ std::vector<std::string> splitString(std::string inputString, char splittingChar
     std::vector<std::string> returnValue;
     int processedIndex = 0;
 
-    while (processedIndex < inputString.length())
+    while ((std::size_t)processedIndex < inputString.length())
     {
         int splittingCharIndex = inputString.find(splittingChar, processedIndex);
         returnValue.push_back(inputString.substr(processedIndex, splittingCharIndex));
@@ -172,6 +172,8 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
             placedTiles.push_back(tupleToInsert);
         }
     }
+
+    return isSuccessful;
 }
 
 bool GameLoop::placeTile(std::vector<std::string> initialInput)
@@ -201,13 +203,13 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput)
     if (isSuccessful)
     {
         bool allAreSameLetter = true;
-        for (int i = 0; i < placedTiles.size() && allAreSameLetter; i++)
+        for (int i = 0; (std::size_t)i < placedTiles.size() && allAreSameLetter; i++)
         {
             allAreSameLetter = std::get<1>(placedTiles[i]) == std::get<1>(placedTiles[0]);
         }
 
         bool allAreSameNumber = true;
-        for (int i = 0; i < placedTiles.size() && allAreSameNumber; i++)
+        for (int i = 0; (std::size_t)i < placedTiles.size() && allAreSameNumber; i++)
         {
             allAreSameNumber = std::get<2>(placedTiles[i]) == std::get<2>(placedTiles[0]);
         }
@@ -218,4 +220,6 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput)
 
     // TODO: Check that the tiles are placed in valid spaces (no blank spaces between them)
     // TODO: Place the tiles on the board if valid
+
+    return isSuccessful;
 }
