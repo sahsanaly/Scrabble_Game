@@ -1,8 +1,9 @@
 #include "Hand.h"
+#include <iostream>
 
 Hand::Hand() 
 {
-    tilesInHand = LinkedList();
+    this->tilesInHand = LinkedList();
 }
 
 Hand::Hand(Hand &other) 
@@ -15,19 +16,22 @@ Hand::~Hand()
     // Using smart pointers, so no need to give deconstruct instructions.
 }
 
-void Hand::addTile(std::shared_ptr<Tile> tile) {
+void Hand::addTile(std::shared_ptr<Tile> tile) 
+{
     tilesInHand.insert(0, tile);
     return;
 }
 
-void Hand::removeTile(std::shared_ptr<Tile> tile) {
+void Hand::removeTile(std::shared_ptr<Tile> tile) 
+{
     int indexTileInHand = tilesInHand.search(tile);
 
     tilesInHand.remove(indexTileInHand);
     return;
 }
 
-std::shared_ptr<Tile> Hand::getTile(Letter letter) {
+std::shared_ptr<Tile> Hand::getTile(Letter letter) 
+{
     std::shared_ptr<Tile> tileToAdd = nullptr;
 
     for (int i = 0; i < tilesInHand.getLength(); i++) {
