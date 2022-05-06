@@ -13,22 +13,24 @@ public:
    ~Player();
 
    // Given a certain tile, adds tile to hand.
-   bool drawTile(std::shared_ptr<Tile> tile);
+   void drawTile(std::shared_ptr<Tile> tile);
 
-   // Places a certain tile from the hand.
+   // Remove a certain tile from the hand and return it
    std::shared_ptr<Tile> placeTile(Letter letter);
 
+   // Adds to the player's score.
+   void addScore(int numScoreToAdd);
+   
+   // Returns the Player's Hand.
    std::shared_ptr<Hand> getHand();
 
-   // Prints the hand for reading.
-   void readHand();
-   
-   // Adds to the player's score.
-   bool addPoints();
-   
    // Return the player's score.
    int getScore();
 
+   // Prints the hand for reading.
+   void printHand();
+
+   // Return a String version of the class.
    std::string getAsString();
 
 private:
