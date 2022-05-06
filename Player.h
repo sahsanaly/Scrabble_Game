@@ -17,7 +17,7 @@ public:
 
    // Remove a certain tile from the hand and return it
    std::shared_ptr<Tile> placeTile(Letter letter);
-   
+
    // Returns the Player's Hand.
    std::shared_ptr<Hand> getHand();
 
@@ -32,6 +32,8 @@ public:
 
    // String representation of object
    operator std::string();
+
+   std::string getName();
 
 private:
    std::shared_ptr<Hand> hand;

@@ -1,12 +1,12 @@
 #include "Hand.h"
 #include <iostream>
 
-Hand::Hand() 
+Hand::Hand()
 {
     this->tilesInHand = std::make_shared<LinkedList>();
 }
 
-Hand::Hand(Hand &other) 
+Hand::Hand(Hand &other)
 {
     this->tilesInHand = other.getTilesInHand();
 }
@@ -16,7 +16,7 @@ Hand::~Hand()
     // Using smart pointers, so no need to give deconstruct instructions.
 }
 
-void Hand::addTile(std::shared_ptr<Tile> tile) 
+void Hand::addTile(std::shared_ptr<Tile> tile)
 {
     tilesInHand->insert(0, tile);
     return;
@@ -44,7 +44,7 @@ std::shared_ptr<Tile> Hand::getTile(Letter letter)
     int indexTile = this->tilesInHand->search(letter);
 
     bool tileFound = (indexTile != -1);
-    
+
     if (tileFound)
     {
         tileToAdd = tilesInHand->get(indexTile);
@@ -67,13 +67,15 @@ Hand::operator std::string()
 {
     std::string handInfoAsString = "";
 
-    int numTiles = tilesInHand->getLength();
-
-    for (int i = 0; i < numTiles - 1; i++)
+    for (int i = 0; i < tilesInHand->getLength(); i++)
     {
         Letter letter = tilesInHand->get(i)->letter;
-        handInfoAsString += letter;
-        handInfoAsString += '\n';
+        int score = tilesInHand->get(i)->getValue();
+        handInfoAsString = handInfoAsString + letter + "-" + std::to_string(score);
+        if (i != tilesInHand->getLength() - 1)
+        {
+            handInfoAsString = handInfoAsString + ", ";
+        }
     }
 
     Letter lastLetter = tilesInHand->get(numTiles - 1)->letter;
@@ -83,7 +85,7 @@ Hand::operator std::string()
 }
 
 void Hand::print()
-{   
+{
     std::cout << std::string(*this) << std::endl;
     return;
 }
