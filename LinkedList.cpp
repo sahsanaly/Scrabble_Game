@@ -41,11 +41,20 @@ std::shared_ptr<Tile> LinkedList::get(int index)
 int LinkedList::search(std::shared_ptr<Tile> tile)
 {
    int returnValue;
+   
+   returnValue = search(tile->letter);
+   
+   return returnValue;
+}
+
+int LinkedList::search(Letter letter)
+{
+   int returnValue;
    if (this->head != nullptr)
    {
       std::shared_ptr<Node> current = this->head;
       int index = 0;
-      while (current->next != nullptr && current->tile->letter != tile->letter)
+      while (current->next != nullptr && current->tile->letter != letter)
       {
          current = current->next;
          index++;
@@ -53,7 +62,7 @@ int LinkedList::search(std::shared_ptr<Tile> tile)
 
       // If the index reached the end of the list, the search term is either the last one, or
       // not in the list. This checks which.
-      if (index == this->length && this->head->tile->letter != tile->letter)
+      if (index == this->length && this->head->tile->letter != letter)
       {
          returnValue = -1;
       }
