@@ -27,7 +27,7 @@ int main(void)
           << "2. Load Game" << std::endl
           << "3. Credits (Show student information)" << std::endl
           << "4. Quit" << std::endl
-          << "5. DEBUG: Hand Test" << std::endl;
+          << "5. DEBUG: Player + Hand Test" << std::endl;
 
       // Get user input
       std::string rawUserInput;
@@ -85,23 +85,24 @@ int main(void)
       }
       else if (intUserInput == 5)
       {
-         std::cout << "Running Hand test..." << std::endl;
-         std::shared_ptr<Hand> testHand = std::make_shared<Hand>();
+         std::cout << "Running Player + Hand test..." << std::endl;
+
+         std::shared_ptr<Player> player = std::make_shared<Player>("Potato");
+         std::shared_ptr<Hand> hand = player->getHand();
 
          std::shared_ptr<Tile> newTile = std::make_shared<Tile>('A');
          std::shared_ptr<Tile> newTile2 = std::make_shared<Tile>('A');
          std::shared_ptr<Tile> newTile3 = std::make_shared<Tile>('C');
-         testHand->addTile(newTile);
-         testHand->addTile(newTile2);
-         testHand->addTile(newTile3);
+         player->drawTile(newTile);
+         player->drawTile(newTile2);
+         player->drawTile(newTile3);
 
-         std::cout << std::string(*testHand) << std::endl;
-         testHand->print();
+         std::cout << std::string(*player) << std::endl;
          std::cout << std::endl;
 
-         std::cout << testHand->getNumberOfTilesWithLetter('A') << std::endl;
-         std::cout << testHand->getNumberOfTilesWithLetter('B') << std::endl;
-         std::cout << testHand->getNumberOfTilesWithLetter('C') << std::endl;
+         std::cout << hand->getNumberOfTilesWithLetter('A') << std::endl;
+         std::cout << hand->getNumberOfTilesWithLetter('B') << std::endl;
+         std::cout << hand->getNumberOfTilesWithLetter('C') << std::endl;
 
          // std::cout << testHand->getTile('A')->getValue() << std::endl;
 
