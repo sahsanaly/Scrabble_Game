@@ -8,7 +8,7 @@ std::string userInput()
 {
     std::cout << "> ";
     std::string returnValue;
-    std::cin >> returnValue;
+    std::getline(std::cin, returnValue);
     return returnValue;
 }
 

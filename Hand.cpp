@@ -1,12 +1,12 @@
 #include "Hand.h"
 #include <iostream>
 
-Hand::Hand() 
+Hand::Hand()
 {
     this->tilesInHand = std::make_shared<LinkedList>();
 }
 
-Hand::Hand(Hand &other) 
+Hand::Hand(Hand &other)
 {
     this->tilesInHand = other.getTilesInHand();
 }
@@ -16,13 +16,13 @@ Hand::~Hand()
     // Using smart pointers, so no need to give deconstruct instructions.
 }
 
-void Hand::addTile(std::shared_ptr<Tile> tile) 
+void Hand::addTile(std::shared_ptr<Tile> tile)
 {
     tilesInHand->insert(0, tile);
     return;
 }
 
-void Hand::removeTile(std::shared_ptr<Tile> tile) 
+void Hand::removeTile(std::shared_ptr<Tile> tile)
 {
     int indexTileInHand = tilesInHand->search(tile);
 
@@ -30,16 +30,18 @@ void Hand::removeTile(std::shared_ptr<Tile> tile)
     return;
 }
 
-std::shared_ptr<Tile> Hand::getTile(Letter letter) 
+std::shared_ptr<Tile> Hand::getTile(Letter letter)
 {
     std::shared_ptr<Tile> tileToAdd = nullptr;
 
-    for (int i = 0; i < tilesInHand->getLength(); i++) {
+    for (int i = 0; i < tilesInHand->getLength(); i++)
+    {
         std::shared_ptr<Tile> tile = tilesInHand->get(i);
 
         bool tileMatchesLetter = (tile->letter == letter);
 
-        if (tileMatchesLetter) {
+        if (tileMatchesLetter)
+        {
             tileToAdd = tile;
         }
     }
@@ -57,13 +59,19 @@ int Hand::getNumberOfTilesWithLetter(Letter letter)
     return this->tilesInHand->getNumOfOccurrences(letter);
 }
 
-std::string Hand::getAsString() 
+std::string Hand::getAsString()
 {
     std::string handInfoAsString = "";
 
-    for (int i = 0; i < tilesInHand->getLength(); i++) {
+    for (int i = 0; i < tilesInHand->getLength(); i++)
+    {
         Letter letter = tilesInHand->get(i)->letter;
-        handInfoAsString = handInfoAsString + letter;
+        int score = tilesInHand->get(i)->getValue();
+        handInfoAsString = handInfoAsString + letter + "-" + std::to_string(score);
+        if (i != tilesInHand->getLength() - 1)
+        {
+            handInfoAsString = handInfoAsString + ", ";
+        }
     }
 
     return handInfoAsString;
@@ -73,7 +81,8 @@ Hand::operator std::string()
 {
     std::string handInfoAsString = "";
 
-    for (int i = 0; i < tilesInHand->getLength(); i++) {
+    for (int i = 0; i < tilesInHand->getLength(); i++)
+    {
         Letter letter = tilesInHand->get(i)->letter;
         handInfoAsString = handInfoAsString + letter;
     }
@@ -84,7 +93,7 @@ Hand::operator std::string()
 void Hand::print()
 {
     std::string stringToPrint = getAsString();
-    
+
     std::cout << stringToPrint << std::endl;
 
     return;

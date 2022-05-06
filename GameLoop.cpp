@@ -11,11 +11,17 @@ std::vector<std::string> splitString(std::string inputString, char splittingChar
     std::vector<std::string> returnValue;
     int processedIndex = 0;
 
-    while ((std::size_t)processedIndex < inputString.length())
+    bool terminate = false;
+    while (!terminate)
     {
-        int splittingCharIndex = inputString.find(splittingChar, processedIndex);
-        returnValue.push_back(inputString.substr(processedIndex, splittingCharIndex));
-        processedIndex = splittingCharIndex;
+        int splittingCharIndex = inputString.find(splittingChar, processedIndex + 1);
+        std::string word = inputString.substr(processedIndex, splittingCharIndex - processedIndex);
+        returnValue.push_back(word);
+        if (splittingCharIndex == -1)
+        {
+            terminate = true;
+        }
+        processedIndex = splittingCharIndex + 1;
     }
 
     return returnValue;
@@ -35,7 +41,8 @@ GameLoop::GameLoop()
         std::cout << std::endl;
     }
 
-    std::cout << "Let's Play!" << std::endl;
+    std::cout << "Let's Play!" << std::endl
+              << std::endl;
 
     // Set up the bag
     //                  A, B, C, D,  E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
@@ -52,6 +59,15 @@ GameLoop::GameLoop()
     }
 
     bag.shuffle();
+
+    for (std::shared_ptr<Player> player : this->players)
+    {
+        for (int i = 0; i < 7; i++)
+        {
+            std::shared_ptr<Tile> tile = this->bag.drawTile();
+            player->drawTile(tile);
+        }
+    }
 }
 
 GameLoop::~GameLoop()
@@ -68,35 +84,48 @@ void GameLoop::mainLoop()
         {
             std::shared_ptr<Player> activePlayer = this->players[playerIndex];
 
-            std::vector<std::string> command = splitString(userInput(), ' ');
+            // Output prompt
+            std::cout << activePlayer->getName() << ", it's your turn" << std::endl;
+            for (int printingIndex = 0; printingIndex < NUM_PLAYERS; printingIndex++)
+            {
+                std::cout << "Score for " << this->players[printingIndex]->getName() << ": " << this->players[printingIndex]->getScore() << std::endl;
+            }
+            std::cout << this->board.convertToString() << std::endl;
+            std::cout << "Your hand is" << std::endl;
+            activePlayer->printHand();
 
             // Store the validness of the input into a seperate variable,
             // since all code paths have the possibility to be incorrect.
-            bool validInput;
+            bool validInput = false;
 
-            if (command[0] == "place")
+            while (!validInput)
             {
-                validInput = this->placeTile(command);
-            }
-            else if (command[0] == "replace")
-            {
-                validInput = this->replaceTile(command);
-            }
-            else if (command[0] == "pass")
-            {
-                validInput = true;
-                // Passing is just doing nothing, so we do nothing
-                // We will eventually need to track when a player passes,
-                // since the game ends if a player passes twice
-            }
-            else
-            {
-                validInput = false;
-            }
+                std::vector<std::string> command = splitString(userInput(), ' ');
 
-            if (!validInput)
-            {
-                std::cout << "Please enter a valid place, replace, or pass command" << std::endl;
+                if (command[0] == "place")
+                {
+                    validInput = this->placeTile(command, activePlayer);
+                }
+                else if (command[0] == "replace")
+                {
+                    validInput = this->replaceTile(command, activePlayer);
+                }
+                else if (command[0] == "pass")
+                {
+                    validInput = true;
+                    // Passing is just doing nothing, so we do nothing
+                    // We will eventually need to track when a player passes,
+                    // since the game ends if a player passes twice
+                }
+                else
+                {
+                    validInput = false;
+                }
+
+                if (!validInput)
+                {
+                    std::cout << "Please enter a valid place, replace, or pass command" << std::endl;
+                }
             }
         }
     }
@@ -150,7 +179,7 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
             isSuccessful = false;
         }
         // The fourth word's first character must be an uppercase letter, while the second character must be a number
-        else if (!isalpha(initialInput[1][0]) || !isupper(initialInput[1][0]) || !isdigit(initialInput[1][1]))
+        else if (!isalpha(initialInput[3][0]) || !isupper(initialInput[3][0]) || !isdigit(initialInput[3][1]))
         {
             isSuccessful = false;
         }
@@ -167,8 +196,8 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
         {
             char letterToPlace = initialInput[1][0];
             char coord1 = initialInput[3][0];
-            char coord2 = std::stoi(initialInput[3].substr(1));
-            std::tuple<Letter, char, int> tupleToInsert = {letterToPlace, coord1, coord2};
+            int coord2 = std::stoi(initialInput[3].substr(1));
+            std::tuple<Letter, char, int> tupleToInsert = {letterToPlace, coord1, coord2 - 1};
             placedTiles.push_back(tupleToInsert);
         }
     }
@@ -176,7 +205,7 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
     return isSuccessful;
 }
 
-bool GameLoop::placeTile(std::vector<std::string> initialInput)
+bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<Player> activePlayer)
 {
     bool isSuccessful = true;
     bool isDone = false;
@@ -192,6 +221,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput)
     {
         // Once we have entered the placement loop, if an invalid command is entered,
         // ask for a valid one and do not return to the main loop until done
+        std::vector<std::string> initialInput = splitString(userInput(), ' ');
         bool isValidInput = this->processPlacementInput(initialInput, placedTiles, isDone);
         if (!isValidInput)
         {
@@ -220,6 +250,68 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput)
 
     // TODO: Check that the tiles are placed in valid spaces (no blank spaces between them)
     // TODO: Place the tiles on the board if valid
+
+    // Check the player has enough tiles to place everything
+    for (char i = 'A'; i <= 'Z' && isSuccessful; i++)
+    {
+        int total = 0;
+        for (std::tuple<Letter, char, int> tileToBePlaced : placedTiles)
+        {
+            if (std::get<0>(tileToBePlaced) == i)
+            {
+                total++;
+            }
+        }
+
+        isSuccessful = activePlayer->getHand()->getNumberOfTilesWithLetter(i) >= total;
+    }
+
+    if (isSuccessful)
+    {
+        for (std::tuple<Letter, char, int> tileToBePlaced : placedTiles)
+        {
+            std::shared_ptr<Tile> tile = activePlayer->placeTile(std::get<0>(tileToBePlaced));
+            std::cout << tile->getValue() << std::endl;
+            activePlayer->addScore(tile->getValue());
+            this->board.setTile(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), tile);
+
+            // TODO: get points for other characters in the word
+            std::shared_ptr<Tile> newTile = this->bag.drawTile();
+            activePlayer->drawTile(newTile);
+        }
+    }
+
+    return isSuccessful;
+}
+
+bool GameLoop::replaceTile(std::vector<std::string> initialCommand, std::shared_ptr<Player> activePlayer)
+{
+    bool isSuccessful = true;
+
+    // All replace commands must be two words long
+    if (initialCommand.size() != 2)
+    {
+        isSuccessful = false;
+    }
+    // The second word must be a single character
+    else if (initialCommand[1].size() != 1 || !isalpha(initialCommand[1][0]))
+    {
+        isSuccessful = false;
+    }
+    else
+    {
+        std::shared_ptr<Tile> toReplace = activePlayer->getHand()->getTile(initialCommand[1][0]);
+        if (toReplace == nullptr)
+        {
+            isSuccessful = false;
+        }
+        else
+        {
+            activePlayer->placeTile(toReplace->letter);
+            this->bag.addTile(toReplace);
+            activePlayer->drawTile(this->bag.drawTile());
+        }
+    }
 
     return isSuccessful;
 }

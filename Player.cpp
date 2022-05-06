@@ -16,7 +16,7 @@ Player::Player(Player &other)
     this->hand = std::make_shared<Hand>(*other.hand);
 }
 
-Player::~Player() 
+Player::~Player()
 {
     // Not necessary due to use of smart pointers
 }
@@ -63,6 +63,11 @@ std::string Player::getAsString()
     playerAsString.append(std::to_string(score));
     playerAsString.append("\n");
     playerAsString.append(this->hand->getAsString());
-    
+
     return playerAsString;
+}
+
+std::string Player::getName()
+{
+    return this->name;
 }
