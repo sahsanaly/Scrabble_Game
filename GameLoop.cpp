@@ -101,16 +101,18 @@ void GameLoop::mainLoop()
             while (!validInput)
             {
                 std::vector<std::string> command = splitString(userInput(), ' ');
+                
+                std::string commandType = command[0];
 
-                if (command[0] == "place")
+                if (commandType == "place")
                 {
                     validInput = this->placeTile(command, activePlayer);
                 }
-                else if (command[0] == "replace")
+                else if (commandType == "replace")
                 {
                     validInput = this->replaceTile(command, activePlayer);
                 }
-                else if (command[0] == "pass")
+                else if (commandType == "pass")
                 {
                     validInput = true;
                     // Passing is just doing nothing, so we do nothing
@@ -270,7 +272,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
     {
         for (std::tuple<Letter, char, int> tileToBePlaced : placedTiles)
         {
-            std::shared_ptr<Tile> tile = activePlayer->placeTile(std::get<0>(tileToBePlaced));
+            std::shared_ptr<Tile> tile = activePlayer->removeTile(std::get<0>(tileToBePlaced));
             std::cout << tile->getValue() << std::endl;
             activePlayer->addScore(tile->getValue());
             this->board.setTile(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), tile);
@@ -287,29 +289,39 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 bool GameLoop::replaceTile(std::vector<std::string> initialCommand, std::shared_ptr<Player> activePlayer)
 {
     bool isSuccessful = true;
+    Letter letterToReplace;
 
     // All replace commands must be two words long
     if (initialCommand.size() != 2)
     {
         isSuccessful = false;
     }
-    // The second word must be a single character
-    else if (initialCommand[1].size() != 1 || !isalpha(initialCommand[1][0]))
-    {
-        isSuccessful = false;
-    }
     else
     {
-        std::shared_ptr<Tile> toReplace = activePlayer->getHand()->getTile(initialCommand[1][0]);
-        if (toReplace == nullptr)
+        letterToReplace = initialCommand[1][0];
+
+        // The second word must be a single character
+        if (initialCommand[1].size() != 1 || !isupper(letterToReplace))
         {
             isSuccessful = false;
         }
         else
         {
-            activePlayer->placeTile(toReplace->letter);
-            this->bag.addTile(toReplace);
-            activePlayer->drawTile(this->bag.drawTile());
+            // Find and replace the tile with the given letter.
+            std::shared_ptr<Tile> tileToReplace = activePlayer->removeTile(letterToReplace);
+
+            // If no tile has the given letter, then the operation is unsuccessful.
+            // Otherwise, complete the operation.
+            if (tileToReplace == nullptr)
+            {
+                isSuccessful = false;
+            }
+            else
+            {
+                // Move the tile back to the bag.
+                this->bag.addTile(tileToReplace);
+                activePlayer->drawTile(this->bag.drawTile());
+            }
         }
     }
 
