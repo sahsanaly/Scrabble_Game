@@ -71,7 +71,7 @@ int LinkedList::search(std::shared_ptr<Tile> tile)
 
 void LinkedList::remove(int index)
 {
-   if (index > this->length && index > 0)
+   if (index > this->length && index >= 0)
    {
       throw std::out_of_range("Index out of range");
    }
@@ -116,7 +116,7 @@ void LinkedList::remove(int index)
 void LinkedList::insert(int index, std::shared_ptr<Tile> tile)
 {
    std::shared_ptr<Node> insertedNode = std::make_shared<Node>(tile, nullptr, nullptr);
-   if (index - 1 > this->length && index > 0)
+   if (index - 1 > this->length && index >= 0)
    {
       throw std::out_of_range("Index out of range");
    }
