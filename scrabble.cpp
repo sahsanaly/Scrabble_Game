@@ -120,11 +120,12 @@ int main(void)
          std::shared_ptr<Hand> testHand = std::make_shared<Hand>();
 
          std::shared_ptr<Tile> newTile = std::make_shared<Tile>('A');
-         
          testHand->addTile(newTile);
+
+         std::cout << std::string(*testHand) << std::endl;
          std::cout << testHand->getAsString() << std::endl;
 
-         std::cout << testHand->getTile('A')->getValue() << std::endl;
+         // std::cout << testHand->getTile('A')->getValue() << std::endl;
 
          // std::cout << newTile->letter << std::endl;
          terminate = true;
