@@ -55,14 +55,14 @@ void Player::printHand()
     this->hand->print();
 }
 
-std::string Player::getAsString()
+Player::operator std::string()
 {
     std::string playerAsString = "";
     playerAsString.append(name);
     playerAsString.append("\n");
     playerAsString.append(std::to_string(score));
     playerAsString.append("\n");
-    playerAsString.append(this->hand->getAsString());
+    playerAsString.append(std::string(*this->hand));
     
     return playerAsString;
 }
