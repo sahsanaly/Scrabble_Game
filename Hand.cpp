@@ -37,7 +37,7 @@ std::shared_ptr<Tile> Hand::getTile(Letter letter)
     for (int i = 0; i < tilesInHand.getLength(); i++) {
         std::shared_ptr<Tile> tile = tilesInHand.get(i);
 
-        bool tileMatchesLetter = tile->getValue() == letter;
+        bool tileMatchesLetter = (tile->letter == letter);
 
         if (tileMatchesLetter) {
             tileToAdd = tile;
