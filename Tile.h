@@ -14,7 +14,7 @@ public:
    Tile();
    Tile(Letter letter);
    Letter letter;
-   int Tile::getValue();
+   int getValue();
 };
 
 #endif // ASSIGN2_TILE_H
