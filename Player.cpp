@@ -13,7 +13,7 @@ Player::Player(Player &other)
 {
     this->name = other.name;
     this->score = other.score;
-    this->hand = std::make_shared<Hand>(other.hand);
+    this->hand = std::make_shared<Hand>(*other.hand);
 }
 
 Player::~Player() 
