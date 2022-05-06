@@ -3,7 +3,7 @@
 
 Hand::Hand() 
 {
-    this->tilesInHand = LinkedList();
+    this->tilesInHand = std::make_shared<LinkedList>();
 }
 
 Hand::Hand(Hand &other) 
@@ -18,15 +18,15 @@ Hand::~Hand()
 
 void Hand::addTile(std::shared_ptr<Tile> tile) 
 {
-    tilesInHand.insert(0, tile);
+    tilesInHand->insert(0, tile);
     return;
 }
 
 void Hand::removeTile(std::shared_ptr<Tile> tile) 
 {
-    int indexTileInHand = tilesInHand.search(tile);
+    int indexTileInHand = tilesInHand->search(tile);
 
-    tilesInHand.remove(indexTileInHand);
+    tilesInHand->remove(indexTileInHand);
     return;
 }
 
@@ -34,8 +34,8 @@ std::shared_ptr<Tile> Hand::getTile(Letter letter)
 {
     std::shared_ptr<Tile> tileToAdd = nullptr;
 
-    for (int i = 0; i < tilesInHand.getLength(); i++) {
-        std::shared_ptr<Tile> tile = tilesInHand.get(i);
+    for (int i = 0; i < tilesInHand->getLength(); i++) {
+        std::shared_ptr<Tile> tile = tilesInHand->get(i);
 
         bool tileMatchesLetter = (tile->letter == letter);
 
@@ -47,7 +47,7 @@ std::shared_ptr<Tile> Hand::getTile(Letter letter)
     return tileToAdd;
 }
 
-LinkedList Hand::getTilesInHand()
+std::shared_ptr<LinkedList> Hand::getTilesInHand()
 {
     return tilesInHand;
 }
@@ -56,8 +56,8 @@ std::string Hand::getAsString()
 {
     std::string handInfoAsString = "";
 
-    for (int i = 0; i < tilesInHand.getLength(); i++) {
-        Letter letter = tilesInHand.get(i)->letter;
+    for (int i = 0; i < tilesInHand->getLength(); i++) {
+        Letter letter = tilesInHand->get(i)->letter;
         handInfoAsString = handInfoAsString + letter;
     }
 
@@ -68,8 +68,8 @@ Hand::operator std::string()
 {
     std::string handInfoAsString = "";
 
-    for (int i = 0; i < tilesInHand.getLength(); i++) {
-        Letter letter = tilesInHand.get(i)->letter;
+    for (int i = 0; i < tilesInHand->getLength(); i++) {
+        Letter letter = tilesInHand->get(i)->letter;
         handInfoAsString = handInfoAsString + letter;
     }
 

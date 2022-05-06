@@ -21,7 +21,7 @@ public:
    std::shared_ptr<Tile> getTile(Letter letter);
 
    // Return all tiles in this hand.
-   LinkedList getTilesInHand();
+   std::shared_ptr<LinkedList> getTilesInHand();
 
    // Convert Hand to String of tiles and return it
    std::string getAsString();
@@ -32,7 +32,7 @@ public:
    operator std::string();
 
 private:
-   LinkedList tilesInHand;
+   std::shared_ptr<LinkedList> tilesInHand;
 };
 
 #endif //ASSIGN2_HAND_H
