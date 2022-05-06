@@ -13,17 +13,21 @@ public:
    ~Hand();
 
    // Add specific tile to hand
-   bool addTile(Tile* tile);
+   void addTile(std::shared_ptr<Tile> tile);
    // Remove tile from hand
-   bool removeTile(Tile* tile);
+   void removeTile(std::shared_ptr<Tile> tile);
    
    // Find the first tile with the desired letter and return its pointer. Return NULL if not found.
-   Tile* getTile(char letter);
+   std::shared_ptr<Tile> getTile(Letter letter);
 
-   // Convert Hand to string of tiles and return it
+   // Return all tiles in this hand.
+   LinkedList getTilesInHand();
+
+   // Convert Hand to String of tiles and return it
    std::string getAsString();
    
-   std::string print();
+   // Print the String format of the Hand.
+   void print();
 
 private:
    LinkedList tilesInHand;

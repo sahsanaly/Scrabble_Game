@@ -1,4 +1,5 @@
 
+#include "Hand.h"
 #include "GameLoop.h"
 #include "LinkedList.h"
 #include "userInput.h"
@@ -79,6 +80,21 @@ int main(void)
       {
          // Quit
          std::cout << "Goodbye" << std::endl;
+         terminate = true;
+      }
+      else if (intUserInput == 5)
+      {
+         std::cout << "Running Hand test..." << std::endl;
+         std::shared_ptr<Hand> testHand = std::make_shared<Hand>();
+
+         std::shared_ptr<Tile> newTile = std::make_shared<Tile>('A');
+         
+         testHand->addTile(newTile);
+         std::cout << testHand->getAsString() << std::endl;
+
+         std::cout << testHand->getTile('A')->getValue() << std::endl;
+
+         // std::cout << newTile->letter << std::endl;
          terminate = true;
       }
       else
