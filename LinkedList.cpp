@@ -37,6 +37,7 @@ std::shared_ptr<Tile> LinkedList::get(int index)
 }
 
 // Returns the index of the indicated tile. Only the letter is compared, not the value
+// Returns -1 if not found.
 int LinkedList::search(std::shared_ptr<Tile> tile)
 {
    int returnValue;
@@ -47,8 +48,19 @@ int LinkedList::search(std::shared_ptr<Tile> tile)
       while (current->next != nullptr && current->tile->letter != tile->letter)
       {
          current = current->next;
+         index++;
       }
-      returnValue = index;
+
+      // If the index reached the end of the list, the search term is either the last one, or
+      // not in the list. This checks which.
+      if (index == this->length && this->head->tile->letter != tile->letter)
+      {
+         returnValue = -1;
+      }
+      else
+      {
+         returnValue = index;
+      }
    }
    else
    {
