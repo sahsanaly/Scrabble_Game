@@ -17,12 +17,12 @@ public:
 
    // Remove a certain tile from the hand and return it
    std::shared_ptr<Tile> placeTile(Letter letter);
-
-   // Adds to the player's score.
-   void addScore(int numScoreToAdd);
    
    // Returns the Player's Hand.
    std::shared_ptr<Hand> getHand();
+
+   // Adds to the player's score.
+   void addScore(int numScoreToAdd);
 
    // Return the player's score.
    int getScore();
