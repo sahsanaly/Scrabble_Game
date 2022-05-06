@@ -78,9 +78,6 @@ Hand::operator std::string()
         }
     }
 
-    Letter lastLetter = tilesInHand->get(numTiles - 1)->letter;
-    handInfoAsString += lastLetter;
-
     return handInfoAsString;
 }
 
