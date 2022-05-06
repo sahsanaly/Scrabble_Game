@@ -26,7 +26,8 @@ int main(void)
           << "1. New Game" << std::endl
           << "2. Load Game" << std::endl
           << "3. Credits (Show student information)" << std::endl
-          << "4. Quit" << std::endl;
+          << "4. Quit" << std::endl
+          << "5. DEBUG: Hand Test" << std::endl;
 
       // Get user input
       std::string rawUserInput;
@@ -91,6 +92,7 @@ int main(void)
          
          testHand->addTile(newTile);
          std::cout << testHand->getAsString() << std::endl;
+         testHand->print();
 
          std::cout << testHand->getTile('A')->getValue() << std::endl;
 
