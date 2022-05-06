@@ -34,16 +34,13 @@ std::shared_ptr<Tile> Hand::getTile(Letter letter)
 {
     std::shared_ptr<Tile> tileToAdd = nullptr;
 
-    for (int i = 0; i < tilesInHand->getLength(); i++)
+    int indexTile = this->tilesInHand->search(letter);
+
+    bool tileFound = (indexTile != -1);
+
+    if (tileFound)
     {
-        std::shared_ptr<Tile> tile = tilesInHand->get(i);
-
-        bool tileMatchesLetter = (tile->letter == letter);
-
-        if (tileMatchesLetter)
-        {
-            tileToAdd = tile;
-        }
+        tileToAdd = tilesInHand->get(indexTile);
     }
 
     return tileToAdd;
@@ -59,7 +56,7 @@ int Hand::getNumberOfTilesWithLetter(Letter letter)
     return this->tilesInHand->getNumOfOccurrences(letter);
 }
 
-std::string Hand::getAsString()
+Hand::operator std::string()
 {
     std::string handInfoAsString = "";
 
@@ -77,24 +74,8 @@ std::string Hand::getAsString()
     return handInfoAsString;
 }
 
-Hand::operator std::string()
-{
-    std::string handInfoAsString = "";
-
-    for (int i = 0; i < tilesInHand->getLength(); i++)
-    {
-        Letter letter = tilesInHand->get(i)->letter;
-        handInfoAsString = handInfoAsString + letter;
-    }
-
-    return handInfoAsString;
-}
-
 void Hand::print()
 {
-    std::string stringToPrint = getAsString();
-
-    std::cout << stringToPrint << std::endl;
-
+    std::cout << std::string(*this) << std::endl;
     return;
 }

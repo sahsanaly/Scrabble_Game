@@ -30,8 +30,8 @@ public:
    // Prints the hand for reading.
    void printHand();
 
-   // Return a String version of the class.
-   std::string getAsString();
+   // String representation of object
+   operator std::string();
 
    std::string getName();
 
