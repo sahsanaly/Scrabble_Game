@@ -57,18 +57,6 @@ int Hand::getNumberOfTilesWithLetter(Letter letter)
     return this->tilesInHand->getNumOfOccurrences(letter);
 }
 
-std::string Hand::getAsString() 
-{
-    std::string handInfoAsString = "";
-
-    for (int i = 0; i < tilesInHand->getLength(); i++) {
-        Letter letter = tilesInHand->get(i)->letter;
-        handInfoAsString = handInfoAsString + letter;
-    }
-
-    return handInfoAsString;
-}
-
 Hand::operator std::string()
 {
     std::string handInfoAsString = "";
@@ -82,10 +70,7 @@ Hand::operator std::string()
 }
 
 void Hand::print()
-{
-    std::string stringToPrint = getAsString();
-    
-    std::cout << stringToPrint << std::endl;
-
+{   
+    std::cout << std::string(*this) << std::endl;
     return;
 }

@@ -96,6 +96,7 @@ int main(void)
          testHand->addTile(newTile3);
 
          std::cout << std::string(*testHand) << std::endl;
+         testHand->print();
          std::cout << std::endl;
 
          std::cout << testHand->getNumberOfTilesWithLetter('A') << std::endl;

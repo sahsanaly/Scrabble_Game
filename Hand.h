@@ -25,13 +25,11 @@ public:
 
    // Return all tiles in this hand.
    std::shared_ptr<LinkedList> getTilesInHand();
-
-   // Convert Hand to String of tiles and return it
-   std::string getAsString();
    
    // Print the String format of the Hand.
    void print();
 
+   // String representation of object
    operator std::string();
 
 private:
