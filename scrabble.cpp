@@ -1,5 +1,5 @@
-
 #include "LinkedList.h"
+#include "Hand.h"
 
 #include <iostream>
 
@@ -112,6 +112,19 @@ int main(void)
       {
          // Quit
          std::cout << "Goodbye" << std::endl;
+         terminate = true;
+      }
+      else if (userInput == 5)
+      {
+         std::cout << "Running Hand test..." << std::endl;
+         std::shared_ptr<Hand> testHand = std::make_shared<Hand>();
+
+         std::shared_ptr<Tile> newTile = std::make_shared<Tile>('a');
+         
+         testHand->addTile(newTile);
+         std::cout << testHand->getAsString() << std::endl;
+
+         // std::cout << newTile->letter << std::endl;
          terminate = true;
       }
       else
