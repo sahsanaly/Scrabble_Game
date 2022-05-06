@@ -4,9 +4,22 @@
 
 #define NUM_PLAYERS 2
 
-// std::vector<std::string> splitString(std::string inputString, char splittingChar)
-// {
-// }
+// Splits a string, using a specified character as the delimiter between substrings
+// Utility function used for parsing user input
+std::vector<std::string> splitString(std::string inputString, char splittingChar)
+{
+    std::vector<std::string> returnValue;
+    int processedIndex = 0;
+
+    while (processedIndex < inputString.length())
+    {
+        int splittingCharIndex = inputString.find(splittingChar, processedIndex);
+        returnValue.push_back(inputString.substr(processedIndex, splittingCharIndex));
+        processedIndex = splittingCharIndex;
+    }
+
+    return returnValue;
+}
 
 GameLoop::GameLoop()
 {
@@ -55,22 +68,21 @@ void GameLoop::mainLoop()
         {
             std::shared_ptr<Player> activePlayer = this->players[playerIndex];
 
-            std::string command = userInput();
-            std::string commandKeyword = command.substr(0, command.find(' '));
+            std::vector<std::string> command = splitString(userInput(), ' ');
 
             // Store the validness of the input into a seperate variable,
             // since all code paths have the possibility to be incorrect.
             bool validInput;
 
-            if (commandKeyword == "place")
+            if (command[0] == "place")
             {
                 validInput = this->placeTile(command);
             }
-            else if (commandKeyword == "replace")
+            else if (command[0] == "replace")
             {
                 validInput = this->replaceTile(command);
             }
-            else if (commandKeyword == "pass")
+            else if (command[0] == "pass")
             {
                 validInput = true;
                 // Passing is just doing nothing, so we do nothing
@@ -90,6 +102,120 @@ void GameLoop::mainLoop()
     }
 }
 
-bool GameLoop::placeTile(std::string initialInput)
+// Another utility function to encapsulate input processing
+// This exists to reduce code duplication, since this action
+// must be performed in several logical places
+bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std::vector<std::tuple<Letter, char, int>> &placedTiles, bool &done)
 {
+    bool isSuccessful = true;
+    // All place operation must have 4 words.
+    // Therefore, if there is not, it is invalid.
+    if (initialInput.size() != 4)
+    {
+        // The only exception to this is the "place Done" command.
+        if (initialInput.size() == 2 && initialInput[0] == "place" && initialInput[1] == "Done")
+        {
+            done = true;
+        }
+        else
+        {
+            isSuccessful = false;
+        }
+    }
+    else
+    {
+        // The first word must be "place".
+        if (initialInput[0] != "place")
+        {
+            isSuccessful = false;
+        }
+        // The third word must be "at"
+        else if (initialInput[2] != "at")
+        {
+            isSuccessful = false;
+        }
+        // The second word must be 1 character long
+        else if (initialInput[1].size() != 1)
+        {
+            isSuccessful = false;
+        }
+        // The second word must consist of a single uppercase letter
+        else if (!isalpha(initialInput[1][0]) || !isupper(initialInput[1][0]))
+        {
+            isSuccessful = false;
+        }
+        // The fourth word must be either 2 or 3 characters long
+        else if (initialInput[3].size() != 2 && initialInput[3].size() != 3)
+        {
+            isSuccessful = false;
+        }
+        // The fourth word's first character must be an uppercase letter, while the second character must be a number
+        else if (!isalpha(initialInput[1][0]) || !isupper(initialInput[1][0]) || !isdigit(initialInput[1][1]))
+        {
+            isSuccessful = false;
+        }
+        // If the fourth word has a third character, it must be a number
+        else if (initialInput[3].size() == 3)
+        {
+            if (!isdigit(initialInput[1][2]))
+            {
+                isSuccessful = false;
+            }
+        }
+        // The input is valid. Now to parse and process
+        else
+        {
+            char letterToPlace = initialInput[1][0];
+            char coord1 = initialInput[3][0];
+            char coord2 = std::stoi(initialInput[3].substr(1));
+            std::tuple<Letter, char, int> tupleToInsert = {letterToPlace, coord1, coord2};
+            placedTiles.push_back(tupleToInsert);
+        }
+    }
+}
+
+bool GameLoop::placeTile(std::vector<std::string> initialInput)
+{
+    bool isSuccessful = true;
+    bool isDone = false;
+
+    // Tuple to store placed tiles for post-validation.
+    // Tuples are TileLetter, coord1, coord2
+    std::vector<std::tuple<Letter, char, int>> placedTiles;
+
+    isSuccessful = this->processPlacementInput(initialInput, placedTiles, isDone);
+
+    // If the first command is invalid, return to the main turn loop
+    while (isSuccessful && !isDone)
+    {
+        // Once we have entered the placement loop, if an invalid command is entered,
+        // ask for a valid one and do not return to the main loop until done
+        bool isValidInput = this->processPlacementInput(initialInput, placedTiles, isDone);
+        if (!isValidInput)
+        {
+            std::cout << "Please enter a valid placement command" << std::endl;
+        }
+    }
+
+    // If tiles have been entered successfully, check that the combination is valid (straight lines only)
+    if (isSuccessful)
+    {
+        bool allAreSameLetter = true;
+        for (int i = 0; i < placedTiles.size() && allAreSameLetter; i++)
+        {
+            allAreSameLetter = std::get<1>(placedTiles[i]) == std::get<1>(placedTiles[0]);
+        }
+
+        bool allAreSameNumber = true;
+        for (int i = 0; i < placedTiles.size() && allAreSameNumber; i++)
+        {
+            allAreSameNumber = std::get<2>(placedTiles[i]) == std::get<2>(placedTiles[0]);
+        }
+
+        // All tiles must be on the same line
+        isSuccessful = allAreSameLetter || allAreSameNumber;
+    }
+
+    // TODO: Check that the tiles are placed in valid spaces (no blank spaces between them)
+    // TODO: Place the tiles on the board if valid
 }
