@@ -67,16 +67,7 @@ Hand::operator std::string()
 {
     std::string handInfoAsString = "";
 
-    for (int i = 0; i < tilesInHand->getLength(); i++)
-    {
-        Letter letter = tilesInHand->get(i)->letter;
-        int score = tilesInHand->get(i)->getValue();
-        handInfoAsString = handInfoAsString + letter + "-" + std::to_string(score);
-        if (i != tilesInHand->getLength() - 1)
-        {
-            handInfoAsString = handInfoAsString + ", ";
-        }
-    }
+    handInfoAsString = std::string(*tilesInHand);
 
     return handInfoAsString;
 }
