@@ -39,7 +39,7 @@ GameLoop::GameLoop()
         std::string playerName = userInput();
 
         bool isPlayerNameValid = false;
-        
+
         while (!isPlayerNameValid)
         {
             isPlayerNameValid = true;
@@ -49,7 +49,7 @@ GameLoop::GameLoop()
             }
             else
             {
-                for (int i = 0; i < playerName.length(); i++)
+                for (long unsigned int i = 0; i < playerName.length(); i++)
                 {
                     char charInName = playerName.at(i);
                     if (!isupper(charInName))
@@ -60,11 +60,12 @@ GameLoop::GameLoop()
             }
             if (!isPlayerNameValid)
             {
-                std::cout << "The name you entered was not in uppercase (or you didn't enter anything!)." << std::endl << "Please try again." << std::endl;
+                std::cout << "The name you entered was not in uppercase (or you didn't enter anything!)." << std::endl
+                          << "Please try again." << std::endl;
                 playerName = userInput();
             }
         }
-        
+
         this->players.push_back(std::make_shared<Player>(playerName));
         std::cout << std::endl;
     }
@@ -129,7 +130,7 @@ void GameLoop::mainLoop()
             while (!validInput)
             {
                 std::vector<std::string> command = splitString(userInput(), ' ');
-                
+
                 std::string commandType = command[0];
 
                 if (commandType == "place")
