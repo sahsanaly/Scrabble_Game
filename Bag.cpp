@@ -31,11 +31,21 @@ void Bag::shuffle()
     //      Pick a random element of the storage part and move it to the shuffled part
     //      Repeat until all elements are in the shuffled part
 
+    int min = 0;
+    int max = this->tilesInBag.getLength()-1;
+    
+    //creating an engine which shuffles the deck different everytime
+    std::random_device engine;
+    std::uniform_int_distribution<int> uniform_dist(min, max);
+
+    int value;
     for (int virtualBoundary = 0; virtualBoundary < this->tilesInBag.getLength(); virtualBoundary++)
     {
         int storageSize = this->tilesInBag.getLength() - virtualBoundary;
 
-        int indexToMove = (std::rand() % (storageSize)) + virtualBoundary;
+        value = uniform_dist(engine);
+
+        int indexToMove = (value % (storageSize)) + virtualBoundary;
 
         std::shared_ptr<Tile> tile = this->tilesInBag.get(indexToMove);
         this->tilesInBag.remove(indexToMove);
