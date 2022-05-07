@@ -85,11 +85,16 @@ int main(void)
       }
       else if (intUserInput == 5)
       {
-         std::cout << "Running Player + Hand test..." << std::endl;
+         std::cout << "Running List, Player, Hand test..." << std::endl;
 
          std::shared_ptr<Player> player = std::make_shared<Player>("Potato");
          std::shared_ptr<Hand> hand = player->getHand();
 
+         std::cout << "// Test printing an empty hand //" << std::endl;
+         hand->getTilesInHand()->print();
+         std::cout << std::endl;
+
+         std::cout << "// Test inserting tiles and printing out Player //" << std::endl;
          std::shared_ptr<Tile> newTile = std::make_shared<Tile>('A');
          std::shared_ptr<Tile> newTile2 = std::make_shared<Tile>('A');
          std::shared_ptr<Tile> newTile3 = std::make_shared<Tile>('C');
@@ -100,13 +105,13 @@ int main(void)
          std::cout << std::string(*player) << std::endl;
          std::cout << std::endl;
 
-         std::cout << hand->getNumberOfTilesWithLetter('A') << std::endl;
-         std::cout << hand->getNumberOfTilesWithLetter('B') << std::endl;
-         std::cout << hand->getNumberOfTilesWithLetter('C') << std::endl;
+         std::cout << "// Test getting frequency of letters in Hand... //" << std::endl;
+         std::cout << "A: " << hand->getNumberOfTilesWithLetter('A') << std::endl;
+         std::cout << "B: " << hand->getNumberOfTilesWithLetter('B') << std::endl;
+         std::cout << "C: " << hand->getNumberOfTilesWithLetter('C') << std::endl;
 
-         // std::cout << testHand->getTile('A')->getValue() << std::endl;
-
-         // std::cout << newTile->letter << std::endl;
+         std::cout << std::endl 
+            << "Tests complete! Terminating...";
          terminate = true;
       }
       else
