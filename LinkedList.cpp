@@ -238,21 +238,33 @@ std::shared_ptr<Node> LinkedList::traverse(int index)
    return returnValue;
 }
 
+LinkedList::operator std::string()
+{
+   std::string linkedListAsString = "";
+
+   for (int i = 0; i < this->getLength(); i++)
+   {
+      Letter letter = this->get(i)->letter;
+      int score = this->get(i)->getValue();
+      linkedListAsString = linkedListAsString + letter + "-" + std::to_string(score);
+      if (i != this->getLength() - 1)
+      {
+         linkedListAsString = linkedListAsString + ", ";
+      }
+   }
+
+   return linkedListAsString;
+}
+
 void LinkedList::print()
 {
-   if (this->head != nullptr)
+   std::string linkedListAsString = std::string(*this);
+   if (linkedListAsString != "")
    {
-      std::shared_ptr<Node> current = this->head;
-      while (current->next != nullptr)
-      {
-         std::cout << current->tile->letter << " ";
-         current = current->next;
-      }
-      std::cout << current->tile->letter << " ";
-      std::cout << std::endl;
+      std::cout << linkedListAsString << std::endl;
    }
    else
    {
       std::cout << "Empty List" << std::endl;
-   }
+   }  
 }

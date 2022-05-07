@@ -33,6 +33,9 @@ public:
    // Insert a tile at index
    void insert(int index, std::shared_ptr<Tile> tile);
 
+   // String representation of object
+   operator std::string();
+   
    // Print String representation of object
    void print();
 
