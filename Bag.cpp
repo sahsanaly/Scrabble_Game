@@ -39,16 +39,13 @@ void Bag::shuffle()
     std::uniform_int_distribution<int> uniform_dist(min, max);
 
     int value;
-    for (int virtualBoundary = 0; virtualBoundary < this->tilesInBag.getLength(); virtualBoundary++)
+    for (int i = 0; i < this->tilesInBag.getLength(); i++)
     {
-        int storageSize = this->tilesInBag.getLength() - virtualBoundary;
-
         value = uniform_dist(engine);
 
-        int indexToMove = (value % (storageSize)) + virtualBoundary;
-
-        std::shared_ptr<Tile> tile = this->tilesInBag.get(indexToMove);
-        this->tilesInBag.remove(indexToMove);
+        std::shared_ptr<Tile> tile = this->tilesInBag.get(value);
+        this->tilesInBag.remove(value);
         this->tilesInBag.insert(0, tile);
     }
+
 }
