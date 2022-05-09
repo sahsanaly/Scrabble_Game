@@ -49,3 +49,8 @@ void Bag::shuffle()
     }
 
 }
+
+Bag::operator std::string() 
+{
+    return std::string(tilesInBag);
+}
