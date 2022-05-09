@@ -7,6 +7,8 @@
 #include "Board.h"
 #include "Bag.h"
 
+typedef std::tuple<Letter, char, int> PlacedTile;
+
 class GameLoop
 {
 public:

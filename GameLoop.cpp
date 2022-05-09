@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "userInput.h"
+#include <algorithm>
 
 #define NUM_PLAYERS 2
 
@@ -183,7 +184,7 @@ void GameLoop::mainLoop()
 // Another utility function to encapsulate input processing
 // This exists to reduce code duplication, since this action
 // must be performed in several logical places
-bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std::vector<std::tuple<Letter, char, int>> &placedTiles, bool &done)
+bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std::vector<PlacedTile> &placedTiles, bool &done)
 {
     bool isSuccessful = true;
     // All place operation must have 4 words.
@@ -246,12 +247,22 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
             char letterToPlace = initialInput[1][0];
             char coord1 = initialInput[3][0];
             int coord2 = std::stoi(initialInput[3].substr(1));
-            std::tuple<Letter, char, int> tupleToInsert = {letterToPlace, coord1, coord2 - 1};
+            PlacedTile tupleToInsert = {letterToPlace, coord1, coord2 - 1};
             placedTiles.push_back(tupleToInsert);
         }
     }
 
     return isSuccessful;
+}
+
+bool sortingTileCharComparison(PlacedTile i, PlacedTile j)
+{
+    return std::get<1>(i) < std::get<1>(j);
+}
+
+bool sortingTileIntComparison(PlacedTile i, PlacedTile j)
+{
+    return std::get<2>(i) < std::get<2>(j);
 }
 
 bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<Player> currentPlayer)
@@ -261,7 +272,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 
     // Tuple to store placed tiles for post-validation.
     // Tuples are TileLetter, coord1, coord2
-    std::vector<std::tuple<Letter, char, int>> placedTiles;
+    std::vector<PlacedTile> placedTiles;
 
     isSuccessful = this->processPlacementInput(initialInput, placedTiles, isDone);
 
@@ -278,9 +289,10 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
         }
     }
 
-    // If tiles have been entered successfully, check that the combination is valid (straight lines only)
+    // If tiles have been entered successfully, check that the combination is valid (straight lines only, no gaps between letters)
     if (isSuccessful)
     {
+        // Determine whether the tiles are in a line.
         bool allAreSameLetter = true;
         for (int i = 0; (std::size_t)i < placedTiles.size() && allAreSameLetter; i++)
         {
@@ -293,18 +305,65 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
             allAreSameNumber = std::get<2>(placedTiles[i]) == std::get<2>(placedTiles[0]);
         }
 
-        // All tiles must be on the same line
-        isSuccessful = allAreSameLetter || allAreSameNumber;
-    }
+        // If the tiles are in a line, check there are no gaps between the tiles
+        if (allAreSameLetter)
+        {
+            // Sort the placedTiles
+            std::sort(placedTiles.begin(), placedTiles.begin() + placedTiles.size(), sortingTileIntComparison);
 
-    // TODO: Check that the tiles are placed in valid spaces (no blank spaces between them)
-    // TODO: Place the tiles on the board if valid
+            int placedTilesIndex = 0;
+            for (int i = std::get<2>(placedTiles[0]); i < std::get<2>(placedTiles[placedTiles.size() - 1]) && isSuccessful; i++)
+            {
+                // If there is a space unaccounted for by the tiles we place, check there is a tile there on the board
+                if (std::get<2>(placedTiles[placedTilesIndex]) != i)
+                {
+                    // If there is no tile there on the board, the placement is invalid
+                    if (this->board.getTile(std::get<1>(placedTiles[0]), i)->letter == 0)
+                    {
+                        isSuccessful = false;
+                    }
+                }
+                else
+                {
+                    placedTilesIndex++;
+                }
+            }
+        }
+        else if (allAreSameNumber)
+        {
+            // Sort the placedTiles
+            std::sort(placedTiles.begin(), placedTiles.begin() + placedTiles.size(), sortingTileCharComparison);
+
+            int placedTilesIndex = 0;
+            for (int i = std::get<1>(placedTiles[0]); i < std::get<1>(placedTiles[placedTiles.size() - 1]) && isSuccessful; i++)
+            {
+                // If there is a space unaccounted for by the tiles we place, check there is a tile there on the board
+                if (std::get<1>(placedTiles[placedTilesIndex]) != i)
+                {
+                    // If there is no tile there on the board, the placement is invalid
+                    if (this->board.getTile(i, std::get<2>(placedTiles[0]))->letter == 0)
+                    {
+                        isSuccessful = false;
+                    }
+                }
+                else
+                {
+                    placedTilesIndex++;
+                }
+            }
+        }
+        // Or if they aren't in a line at all, set successful to false
+        else
+        {
+            isSuccessful = false;
+        }
+    }
 
     // Check the player has enough tiles to place everything
     for (char i = 'A'; i <= 'Z' && isSuccessful; i++)
     {
         int total = 0;
-        for (std::tuple<Letter, char, int> tileToBePlaced : placedTiles)
+        for (PlacedTile tileToBePlaced : placedTiles)
         {
             if (std::get<0>(tileToBePlaced) == i)
             {
@@ -317,7 +376,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 
     if (isSuccessful)
     {
-        for (std::tuple<Letter, char, int> tileToBePlaced : placedTiles)
+        for (PlacedTile tileToBePlaced : placedTiles)
         {
             std::shared_ptr<Tile> tile = currentPlayer->takeTile(std::get<0>(tileToBePlaced));
             std::cout << tile->getValue() << std::endl;
