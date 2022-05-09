@@ -18,7 +18,7 @@ Hand::~Hand()
 
 void Hand::addTile(std::shared_ptr<Tile> tile)
 {
-    tilesInHand->insert(0, tile);
+    tilesInHand->insert(tilesInHand->getLength(), tile);
     return;
 }
 
