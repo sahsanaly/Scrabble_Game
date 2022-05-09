@@ -110,6 +110,9 @@ int main(void)
          std::cout << "B: " << hand->getNumberOfTilesWithLetter('B') << std::endl;
          std::cout << "C: " << hand->getNumberOfTilesWithLetter('C') << std::endl;
 
+         std::cout << "// Test loading... //" << std::endl;
+         GameLoop gameLoop = GameLoop("test");
+
          std::cout << std::endl 
             << "Tests complete! Terminating...";
          terminate = true;
