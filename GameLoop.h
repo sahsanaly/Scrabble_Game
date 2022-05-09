@@ -53,6 +53,9 @@ private:
 
     // Save the game to indicated save file
     bool saveGame(std::vector<std::string> initialCommand);
+
+    // Check to see if word is adjacent to existing words.
+    bool isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> endPos);
 };
 
 #endif

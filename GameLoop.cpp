@@ -377,6 +377,17 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 
     if (isSuccessful)
     {
+        std::cout << "potato" << std::endl;
+        std::tuple<char, int> startTuple = {std::get<1>(placedTiles[0]), std::get<2>(placedTiles[0])};
+        std::tuple<char, int> endTuple = {std::get<1>(placedTiles[placedTiles.size() - 1]), std::get<2>(placedTiles[placedTiles.size() - 1])};
+
+        isSuccessful = isAdjacent(startTuple, endTuple);
+
+    }
+    
+
+    if (isSuccessful)
+    {
         for (PlacedTile tileToBePlaced : placedTiles)
         {
             // Place the tile on the board
@@ -467,7 +478,7 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand)
 
         outfile.open("saves/" + filename + ".txt");
 
-        for (int i = 0; i < players.size(); i++)
+        for (int i = 0; i < static_cast<int>(players.size()); i++)
         {
             std::shared_ptr<Player> player = players.at(i);
             outfile << std::string(*player) << std::endl;
@@ -496,4 +507,78 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand)
     }
 
     return isSuccessful;
+}
+
+bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> endPos)
+{
+    //Need to take perameter of position of all placed tiles.
+    //Then check all tiles directly adjecent to placed tiles.
+    //If any adjacent tiles have tiles present, if they do return true.
+    //Else if first turn of the game make sure word is placed center of board.
+
+    //TODO: If board is empty, make sure at least one tile is on the center of the board.
+    bool validWord = false;
+
+    char startChar = std::get<0>(startPos);
+    int startInt = std::get<1>(startPos);
+    char endChar = std::get<0>(endPos);
+    int endInt = std::get<1>(endPos);
+    std::vector<std::tuple<char, int>> toCheck;
+    // If the center tile is empty, center tile must be used.
+    
+    
+    
+
+    if (startChar == endChar)
+    {
+        std::cout << "samechar" << std::endl;
+        if (this->board.getTile('H', 8) == 0 && startChar == 'H' && startInt <= 8 && endInt >= 8){
+
+            std::cout << "samechar center" << std::endl;
+            std::tuple<char, int> tupleToInsert = {startChar, startInt - 1};
+            toCheck.push_back(tupleToInsert);
+
+            tupleToInsert = {startChar, endInt + 1};
+            toCheck.push_back(tupleToInsert);
+
+            for (int i = startInt; i <= endInt; i++)
+            {
+                tupleToInsert = {startChar - 1, i};
+                toCheck.push_back(tupleToInsert);
+                tupleToInsert = {startChar + 1, i};
+                toCheck.push_back(tupleToInsert);
+            }
+        }
+        
+    }else{
+        std::cout << "sameint" << std::endl;
+        if (this->board.getTile('H', 8) == 0 && startInt == 8 && startChar <= 'H' && endChar >= 'H'){
+            std::cout << "sameint center" << std::endl;
+            std::tuple<char, int> tupleToInsert = {startChar - 1, startInt};
+            toCheck.push_back(tupleToInsert);
+
+            tupleToInsert = {startChar + 1, endInt};
+            toCheck.push_back(tupleToInsert);
+
+            for (int i = startChar; i <= endChar; i++)
+            {
+                tupleToInsert = {i, startInt - 1};
+                toCheck.push_back(tupleToInsert);
+                tupleToInsert = {i, startInt + 1};
+                toCheck.push_back(tupleToInsert);
+            }
+        }
+    }
+
+    for (std::tuple<char, int> tileToCheck : toCheck)
+    {
+        if (this->board.getTile(std::get<0>(tileToCheck), std::get<1>(tileToCheck)) != 0)
+        {
+            validWord = true;
+        }
+        
+    }
+    
+    return validWord;
+    
 }
