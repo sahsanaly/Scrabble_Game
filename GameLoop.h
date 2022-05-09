@@ -32,13 +32,14 @@ private:
 
     Board board;
     Bag bag;
+    int currentPlayerIndex;
 
     // Parse the inital command
     // Get additional commands until place done is received
     // Check the placed tiles to ensure they meet placing rules
     // Put tiles onto the board if they meet placing rules
     // If the tiles breach placing rules, return false, otherwise return true
-    bool placeTile(std::vector<std::string> initialCommand, std::shared_ptr<Player> activePlayer);
+    bool placeTile(std::vector<std::string> initialCommand, std::shared_ptr<Player> currentPlayer);
 
     // Since some of the logic in placeTile needs to be performed in several
     // logical places, we split some of the code into a seperate function to
@@ -48,7 +49,7 @@ private:
     // Check if the tile indicated is valid
     // If yes, replace it and return true
     // If no, return false
-    bool replaceTile(std::vector<std::string> initialCommand, std::shared_ptr<Player> activePlayer);
+    bool replaceTile(std::vector<std::string> initialCommand, std::shared_ptr<Player> currentPlayer);
 
     // Save the game to indicated save file
     bool saveGame(std::vector<std::string> initialCommand);

@@ -20,8 +20,8 @@ public:
    // Shuffle the bag (by default during initiation)
    void shuffle();
 
-   // Convert Bag to string
-   std::string getAsString();
+   // String representation of Bag
+   operator std::string();
 
 private:
    LinkedList tilesInBag;
