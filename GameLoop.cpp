@@ -341,8 +341,6 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
         }
     }
 
-    // TODO: Check that the tiles are placed in valid spaces (no blank spaces between them)
-
     // Check the player has enough tiles to place everything
     for (char i = 'A'; i <= 'Z' && isSuccessful; i++)
     {
