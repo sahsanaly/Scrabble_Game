@@ -15,7 +15,7 @@ public:
     // Default loader
     GameLoop();
     // Save game loader
-    GameLoop(std::string saveFileName);
+    GameLoop(std::string saveFilename);
 
     ~GameLoop();
     // Main game loop.

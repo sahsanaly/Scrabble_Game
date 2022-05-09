@@ -473,3 +473,66 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand) {
     
     return isSuccessful;
 }
+
+GameLoop::GameLoop(std::string saveFilename)
+{
+    std::ifstream file;
+    try
+    {
+        file.open("saves/" + saveFilename + ".txt");
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+
+    std::string playerName = "";
+    std::getline(file, playerName);
+
+    std::string playerScoreStr = "";
+    std::getline(file, playerScoreStr);
+
+    std::string playerTilesStr = "";
+    std::getline(file, playerTilesStr);
+    
+    bool isPlayer = (playerName.at(0) != ' ');
+
+    while (isPlayer) {
+        std::cout << "New player: " << playerName << std::endl;
+        std::shared_ptr<Player> newPlayer = std::make_shared<Player>(playerName);
+        
+        int playerScore = std::stoi(playerScoreStr);
+        newPlayer->addScore(playerScore);
+        
+        this->players.push_back(newPlayer);
+
+        int prevSplitterIndex = 0;
+
+        bool endOfLine = false;
+
+        while (!endOfLine)
+        {
+            int splittingCharIndex = playerTilesStr.find(',', prevSplitterIndex + 1);
+            std::string tileStr = playerTilesStr.substr(prevSplitterIndex, splittingCharIndex - prevSplitterIndex);
+            Letter letterToAdd = tileStr.at(0);
+
+            std::shared_ptr<Tile> newTile = std::make_shared<Tile>(letterToAdd);
+            newPlayer->drawTile(newTile);
+
+            // std::cout << splittingCharIndex << std::endl;
+            if (splittingCharIndex == -1)
+            {
+                endOfLine = true;
+            }
+
+            prevSplitterIndex = splittingCharIndex + 2;
+        }
+        std::getline(file, playerName);
+        isPlayer = (playerName.at(0) != ' ');
+        if (isPlayer)
+        {
+            std::getline(file, playerScoreStr);
+            std::getline(file, playerTilesStr);
+        }
+    }
+}
