@@ -157,10 +157,10 @@ void GameLoop::mainLoop()
                 validInput = this->saveGame(command);
                 if (validInput)
                 {
-                    std::cout << std::endl 
-                        << "Game successfully saved"
-                        << std::endl
-                        << std::endl;
+                    std::cout << std::endl
+                              << "Game successfully saved"
+                              << std::endl
+                              << std::endl;
                 }
                 repeatTurn = true;
             }
@@ -290,16 +290,17 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
     }
 
     // If tiles have been entered successfully, check that the combination is valid (straight lines only, no gaps between letters)
+    // These variables are placed outside the block so that they can be used later on
+    bool allAreSameLetter = true;
+    bool allAreSameNumber = true;
     if (isSuccessful)
     {
         // Determine whether the tiles are in a line.
-        bool allAreSameLetter = true;
         for (int i = 0; (std::size_t)i < placedTiles.size() && allAreSameLetter; i++)
         {
             allAreSameLetter = std::get<1>(placedTiles[i]) == std::get<1>(placedTiles[0]);
         }
 
-        bool allAreSameNumber = true;
         for (int i = 0; (std::size_t)i < placedTiles.size() && allAreSameNumber; i++)
         {
             allAreSameNumber = std::get<2>(placedTiles[i]) == std::get<2>(placedTiles[0]);
@@ -378,14 +379,36 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
     {
         for (PlacedTile tileToBePlaced : placedTiles)
         {
+            // Place the tile on the board
             std::shared_ptr<Tile> tile = currentPlayer->takeTile(std::get<0>(tileToBePlaced));
-            std::cout << tile->getValue() << std::endl;
-            currentPlayer->addScore(tile->getValue());
+            // activePlayer->addScore(tile->getValue());
             this->board.setTile(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), tile);
 
-            // TODO: get points for other characters in the word
+            // Repopulate the user's hand
             std::shared_ptr<Tile> newTile = this->bag.drawTile();
             currentPlayer->drawTile(newTile);
+
+            // Calculate the points for any perpendicular words
+            std::vector<std::shared_ptr<Tile>> possibleFormedWord = this->board.getWord(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), allAreSameLetter);
+            // If the "word" length is 1, it's not a formed word
+            if (possibleFormedWord.size() > 1)
+            {
+                for (std::shared_ptr<Tile> wordTile : possibleFormedWord)
+                {
+                    currentPlayer->addScore(wordTile->getValue());
+                }
+            }
+        }
+
+        // Add the score for formed word
+        std::vector<std::shared_ptr<Tile>> formedWord = this->board.getWord(std::get<1>(placedTiles[0]), std::get<2>(placedTiles[0]), !allAreSameLetter);
+        // If the "word" length is 1, it's not a formed word
+        if (formedWord.size() > 1)
+        {
+            for (std::shared_ptr<Tile> wordTile : formedWord)
+            {
+                currentPlayer->addScore(wordTile->getValue());
+            }
         }
     }
 
@@ -434,16 +457,17 @@ bool GameLoop::replaceTile(std::vector<std::string> initialCommand, std::shared_
     return isSuccessful;
 }
 
-bool GameLoop::saveGame(std::vector<std::string> initialCommand) {
+bool GameLoop::saveGame(std::vector<std::string> initialCommand)
+{
     std::string filename = initialCommand[1];
     bool isSuccessful = false;
-    try 
+    try
     {
         std::ofstream outfile;
 
         outfile.open("saves/" + filename + ".txt");
 
-        for (int i = 0; i < players.size(); i++) 
+        for (int i = 0; i < players.size(); i++)
         {
             std::shared_ptr<Player> player = players.at(i);
             outfile << std::string(*player) << std::endl;
@@ -456,7 +480,7 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand) {
         std::shared_ptr<Player> currentPlayer = this->players[currentPlayerIndex];
 
         outfile << currentPlayer->getName();
-        
+
         if (outfile.bad())
         {
             isSuccessful = false;
@@ -466,11 +490,11 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand) {
             isSuccessful = true;
         }
     }
-    catch(const std::exception& e)
+    catch (const std::exception &e)
     {
         isSuccessful = false;
     }
-    
+
     return isSuccessful;
 }
 
