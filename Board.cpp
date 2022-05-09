@@ -34,6 +34,55 @@ void Board::setTile(char coord1, int coord2, std::shared_ptr<Tile> tile)
     this->board[coord1Int][coord2] = tile;
 }
 
+std::vector<std::shared_ptr<Tile>> Board::getWord(char coord1, int coord2, bool letterDirection)
+{
+    std::vector<std::shared_ptr<Tile>> returnValue;
+    // Go in the characterDirection
+    if (!letterDirection)
+    {
+        // Get the characters behind the coords
+        int intIndex = coord2 - 1;
+        while (intIndex >= 0 && this->getTile(coord1, intIndex)->letter != 0)
+        {
+            // This is inefficient, but it ensures that the tiles will be in the correct order
+            returnValue.insert(returnValue.begin(), this->getTile(coord1, intIndex));
+            intIndex--;
+        }
+
+        // Get the character(s) at, and in front the coords
+        intIndex = coord2;
+        while (intIndex <= BOARD_SIZE && this->getTile(coord1, intIndex)->letter != 0)
+        {
+            // This is inefficient, but it ensures that the tiles will be in the correct order
+            returnValue.push_back(this->getTile(coord1, intIndex));
+            intIndex++;
+        }
+    }
+    // Go in the integerDirection
+    else
+    {
+        // Get the characters behind the coords
+        int charIndex = coord1 - 1;
+        while (charIndex >= 65 && this->getTile(charIndex, coord2)->letter != 0)
+        {
+            // This is inefficient, but it ensures that the tiles will be in the correct order
+            returnValue.insert(returnValue.begin(), this->getTile(charIndex, coord2));
+            charIndex--;
+        }
+
+        // Get the character(s) at, and in front the coords
+        charIndex = coord1;
+        while (charIndex <= 65 + BOARD_SIZE && this->getTile(charIndex, coord2)->letter != 0)
+        {
+            // This is inefficient, but it ensures that the tiles will be in the correct order
+            returnValue.push_back(this->getTile(charIndex, coord2));
+            charIndex++;
+        }
+    }
+
+    return returnValue;
+}
+
 std::string Board::convertToString()
 {
     std::stringstream output;

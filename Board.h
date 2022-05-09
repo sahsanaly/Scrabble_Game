@@ -14,6 +14,9 @@ public:
     void setTile(char coord1, int coord2, std::shared_ptr<Tile> tile);
     std::string convertToString();
 
+    // Returns a list of the "word" in the letterDirection or intDirection, that intersects (coord1, coord2)
+    std::vector<std::shared_ptr<Tile>> getWord(char coord1, int coord2, bool letterDirection);
+
 private:
     std::vector<std::vector<std::shared_ptr<Tile>>> board;
 };
