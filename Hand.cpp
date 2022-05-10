@@ -11,9 +11,14 @@ Hand::Hand(Hand &other)
     this->tilesInHand = other.getTilesInHand();
 }
 
+Hand::Hand(std::string constructionString)
+{
+    this->tilesInHand = std::make_shared<LinkedList>(constructionString);
+}
+
 Hand::~Hand()
 {
-    // Using smart pointers, so no need to give deconstruct instructions.
+    this->tilesInHand = nullptr;
 }
 
 void Hand::addTile(std::shared_ptr<Tile> tile)
@@ -22,7 +27,7 @@ void Hand::addTile(std::shared_ptr<Tile> tile)
     return;
 }
 
-void Hand::removeTile(Letter letter) 
+void Hand::removeTile(Letter letter)
 {
     // Search for the first tile with given letter.
     int indexTileInHand = tilesInHand->search(letter);
@@ -31,13 +36,13 @@ void Hand::removeTile(Letter letter)
     return;
 }
 
-void Hand::removeTile(std::shared_ptr<Tile> tile) 
+void Hand::removeTile(std::shared_ptr<Tile> tile)
 {
     removeTile(tile->letter);
     return;
 }
 
-std::shared_ptr<Tile> Hand::getTile(Letter letter) 
+std::shared_ptr<Tile> Hand::getTile(Letter letter)
 {
     std::shared_ptr<Tile> tileToAdd = nullptr;
 

@@ -10,6 +10,7 @@ class Player
 public:
    Player(std::string name);
    Player(Player &other);
+   Player(std::string name, std::string score, std::string handString);
    ~Player();
 
    // Given a certain tile, adds tile to hand.
@@ -17,7 +18,7 @@ public:
 
    // Remove a certain tile from the hand and return it
    std::shared_ptr<Tile> takeTile(std::shared_ptr<Tile> tile);
-   
+
    // Remove a certain tile from the hand and return it
    std::shared_ptr<Tile> takeTile(Letter letter);
 
@@ -45,7 +46,7 @@ private:
 
    // Player's score
    int score;
-   
+
    // Name of Player
    std::string name;
 };

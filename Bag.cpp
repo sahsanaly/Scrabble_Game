@@ -6,6 +6,11 @@ Bag::Bag()
 {
 }
 
+Bag::Bag(std::string constructionString)
+{
+    this->tilesInBag = LinkedList(constructionString);
+}
+
 Bag::~Bag()
 {
 }
@@ -32,9 +37,9 @@ void Bag::shuffle()
     //      Repeat until all elements are in the shuffled part
 
     int min = 0;
-    int max = this->tilesInBag.getLength()-1;
-    
-    //creating an engine which shuffles the deck different everytime
+    int max = this->tilesInBag.getLength() - 1;
+
+    // creating an engine which shuffles the deck different everytime
     std::random_device engine;
     std::uniform_int_distribution<int> uniform_dist(min, max);
 
@@ -47,10 +52,9 @@ void Bag::shuffle()
         this->tilesInBag.remove(value);
         this->tilesInBag.insert(0, tile);
     }
-
 }
 
-Bag::operator std::string() 
+Bag::operator std::string()
 {
     return std::string(tilesInBag);
 }

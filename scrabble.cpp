@@ -2,7 +2,7 @@
 #include "Hand.h"
 #include "GameLoop.h"
 #include "LinkedList.h"
-#include "userInput.h"
+#include "utils.h"
 
 #include <iostream>
 
@@ -32,7 +32,7 @@ int main(void)
       // Get user input
       std::string rawUserInput;
 
-      // Prevents the wierd repeating buffer issue
+      // Prevents the weird repeating buffer issue
       int intUserInput = 0;
       try
       {
@@ -52,8 +52,29 @@ int main(void)
       }
       else if (intUserInput == 2)
       {
+         // Declaring a pointer allows us to create a memory space outside
+         // the try block, without executing the default constructor
+         std::shared_ptr<GameLoop> game;
          // Load a game
-         std::cout << "Not yet implemented!" << std::endl;
+         std::cout << "Enter the filename from which load a game" << std::endl;
+         std::string filename = userInput();
+         bool successfulLoad = true;
+         try
+         {
+            game = std::make_shared<GameLoop>(filename);
+         }
+         // Use the
+         catch (std::exception &unused)
+         {
+            std::cout << "That savefile is invalid. Please select a valid savefile" << std::endl;
+            successfulLoad = false;
+         }
+
+         if (successfulLoad)
+         {
+            std::cout << "Starting mainLoop" << std::endl;
+            game->mainLoop();
+         }
       }
       else if (intUserInput == 3)
       {
@@ -113,8 +134,8 @@ int main(void)
          std::cout << "// Test loading... //" << std::endl;
          GameLoop gameLoop = GameLoop("test");
 
-         std::cout << std::endl 
-            << "Tests complete! Terminating...";
+         std::cout << std::endl
+                   << "Tests complete! Terminating...";
          terminate = true;
       }
       else

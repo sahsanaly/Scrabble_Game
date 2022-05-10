@@ -1,8 +1,8 @@
 #include "Board.h"
 #include <iostream>
 #include <sstream>
-
-#define BOARD_SIZE 15
+#include "defines.h"
+#include "utils.h"
 
 Board::Board()
 {
@@ -124,4 +124,33 @@ std::string Board::convertToString()
     }
 
     return output.str();
+}
+
+Board::Board(std::string constructionString)
+{
+    this->board = std::vector<std::vector<std::shared_ptr<Tile>>>();
+
+    std::vector<std::string> vectorStrings = splitString(constructionString, '\n');
+
+    // Iterate over the actual board size
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        this->board.push_back(std::vector<std::shared_ptr<Tile>>());
+
+        for (int j = 0; j < BOARD_SIZE; j++)
+        {
+            this->board[i].push_back(std::make_shared<Tile>(char(0)));
+
+            char tileLetter = vectorStrings[i + 2][(4 * j) + 4];
+
+            if (!isalpha(tileLetter))
+            {
+                this->setTile(i + 65, j, std::make_shared<Tile>());
+            }
+            else
+            {
+                this->setTile(i + 65, j, std::make_shared<Tile>(tileLetter));
+            }
+        }
+    }
 }

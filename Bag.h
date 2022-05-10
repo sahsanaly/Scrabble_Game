@@ -9,6 +9,7 @@ class Bag
 {
 public:
    Bag();
+   Bag(std::string constructionString);
    ~Bag();
 
    // Add specific tile to the tail of the Bag
