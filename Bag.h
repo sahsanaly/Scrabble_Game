@@ -25,7 +25,7 @@ public:
    operator std::string();
 
 private:
-   LinkedList tilesInBag;
+   std::shared_ptr<LinkedList> tilesInBag;
 };
 
 #endif
