@@ -141,7 +141,7 @@ Board::Board(std::string constructionString)
         {
             this->board[i].push_back(std::make_shared<Tile>(char(0)));
 
-            char tileLetter = vectorStrings[i + 2][(4 * j) + 4];
+            char tileLetter = vectorStrings[i][(4 * j) + 4];
 
             if (!isalpha(tileLetter))
             {

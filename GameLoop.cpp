@@ -87,24 +87,43 @@ GameLoop::GameLoop(std::string saveFilename)
 
     std::cout << saveFile.is_open() << std::endl;
 
-    for (int i = 0; i < NUM_PLAYERS; i++)
-    {
-        std::string playerName;
-        std::string playerScore;
-        std::string playerHand;
+    std::string playerName = "";
+    std::getline(saveFile, playerName);
+
+    std::string playerScoreStr = "";
+    std::getline(saveFile, playerScoreStr);
+
+    std::string playerHandStr = "";
+    std::getline(saveFile, playerHandStr);
+    
+    bool isPlayer = (playerName.at(0) != ' ');
+
+    while (isPlayer) {
+        std::cout << "New player: " << playerName << std::endl;
+        std::shared_ptr<Player> newPlayer = std::make_shared<Player>(playerName, playerScoreStr, playerHandStr);
+        
+        int playerScore = std::stoi(playerScoreStr);
+        newPlayer->addScore(playerScore);
+        
+        this->players.push_back(newPlayer);
+
         std::getline(saveFile, playerName);
-        std::getline(saveFile, playerScore);
-        std::getline(saveFile, playerHand);
-
-        std::shared_ptr<Player> player = std::make_shared<Player>(playerName, playerScore, playerHand);
-
-        this->players.push_back(player);
+        isPlayer = (playerName.at(0) != ' ');
+        if (isPlayer)
+        {
+            std::getline(saveFile, playerScoreStr);
+            std::getline(saveFile, playerHandStr);
+        }
     }
+    // First header line already taken to check name.
+    // Dump second line.
+    std::string dumpBoardHeading = "";
+    std::getline(saveFile, dumpBoardHeading);
 
     std::stringstream boardString;
 
-    // There are two header lines, plus the board body
-    for (int i = 0; i < BOARD_SIZE + 2; i++)
+    // Read the board body
+    for (int i = 0; i < BOARD_SIZE; i++)
     {
         char thisChar;
         do
@@ -236,6 +255,10 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
         if (initialInput.size() == 2 && initialInput[0] == "place" && initialInput[1] == "Done")
         {
             done = true;
+            for (long unsigned int i = 0; i < players.size(); i++)
+            {
+                std::cout << std::string(*players.at(i)) << std::endl;
+            }
         }
         else
         {
@@ -424,7 +447,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
             std::shared_ptr<Tile> tile = currentPlayer->takeTile(std::get<0>(tileToBePlaced));
             // activePlayer->addScore(tile->getValue());
             this->board.setTile(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), tile);
-
+            
             // Repopulate the user's hand
             std::shared_ptr<Tile> newTile = this->bag.drawTile();
             currentPlayer->drawTile(newTile);
