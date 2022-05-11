@@ -4,6 +4,7 @@
 
 Bag::Bag()
 {
+    this->tilesInBag = std::make_shared<LinkedList>();
 }
 
 Bag::Bag(std::string constructionString)

@@ -12,6 +12,8 @@ GameLoop::GameLoop()
     std::cout << "Starting a new game" << std::endl;
     std::cout << std::endl;
 
+    bag = std::make_shared<Bag>();
+
     this->currentPlayerIndex = 0;
 
     for (int playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++)
@@ -65,17 +67,18 @@ GameLoop::GameLoop()
         for (int i = 0; i < quantities[charIndex]; i++)
         {
             // 65 is the ascii value of A. This generates the relevant character based on charIndex
-            bag.addTile(std::make_shared<Tile>((Letter)65 + charIndex));
+            std::shared_ptr<Tile> newTile = std::make_shared<Tile>((Letter)65 + charIndex);
+            bag->addTile(newTile);
         }
     }
 
-    bag.shuffle();
+    bag->shuffle();
 
     for (std::shared_ptr<Player> player : this->players)
     {
         for (int i = 0; i < 7; i++)
         {
-            std::shared_ptr<Tile> tile = this->bag.drawTile();
+            std::shared_ptr<Tile> tile = this->bag->drawTile();
             player->drawTile(tile);
         }
     }
@@ -137,7 +140,7 @@ GameLoop::GameLoop(std::string saveFilename)
 
     std::string bagString;
     std::getline(saveFile, bagString);
-    this->bag = Bag(bagString);
+    this->bag = std::make_shared<Bag>(bagString);
 
     std::string startingPlayerName;
     std::getline(saveFile, startingPlayerName);
@@ -449,7 +452,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
             this->board.setTile(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), tile);
             
             // Repopulate the user's hand
-            std::shared_ptr<Tile> newTile = this->bag.drawTile();
+            std::shared_ptr<Tile> newTile = this->bag->drawTile();
             currentPlayer->drawTile(newTile);
 
             // Calculate the points for any perpendicular words
@@ -512,8 +515,8 @@ bool GameLoop::replaceTile(std::vector<std::string> initialCommand, std::shared_
             else
             {
                 // Move the tile back to the bag.
-                this->bag.addTile(tileToReplace);
-                currentPlayer->drawTile(this->bag.drawTile());
+                this->bag->addTile(tileToReplace);
+                currentPlayer->drawTile(this->bag->drawTile());
             }
         }
     }
@@ -539,7 +542,7 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand)
 
         outfile << board.convertToString();
 
-        outfile << std::string(bag) << std::endl;
+        outfile << std::string(*bag) << std::endl;
 
         std::shared_ptr<Player> currentPlayer = this->players[currentPlayerIndex];
 
