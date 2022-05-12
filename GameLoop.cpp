@@ -88,8 +88,6 @@ GameLoop::GameLoop(std::string saveFilename)
 {
     std::ifstream saveFile("saves/" + saveFilename + ".txt");
 
-    std::cout << saveFile.is_open() << std::endl;
-
     std::string playerName = "";
     std::getline(saveFile, playerName);
 
@@ -98,17 +96,23 @@ GameLoop::GameLoop(std::string saveFilename)
 
     std::string playerHandStr = "";
     std::getline(saveFile, playerHandStr);
-    
+
     bool isPlayer = (playerName.at(0) != ' ');
 
-    while (isPlayer) {
-        std::cout << "New player: " << playerName << std::endl;
+    while (isPlayer)
+    {
         std::shared_ptr<Player> newPlayer = std::make_shared<Player>(playerName, playerScoreStr, playerHandStr);
-        
+
         int playerScore = std::stoi(playerScoreStr);
         newPlayer->addScore(playerScore);
-        
+
         this->players.push_back(newPlayer);
+
+        // If there is nothing to read, std::getline will leave the player strings in place, infinitely loading the same player
+        // Resetting them prevents this
+        playerName = "";
+        playerScoreStr = "";
+        playerHandStr = "";
 
         std::getline(saveFile, playerName);
         isPlayer = (playerName.at(0) != ' ');
@@ -118,6 +122,12 @@ GameLoop::GameLoop(std::string saveFilename)
             std::getline(saveFile, playerHandStr);
         }
     }
+
+    if (this->players.size() != 2)
+    {
+        throw std::exception();
+    }
+
     // First header line already taken to check name.
     // Dump second line.
     std::string dumpBoardHeading = "";
@@ -450,7 +460,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
             std::shared_ptr<Tile> tile = currentPlayer->takeTile(std::get<0>(tileToBePlaced));
             // activePlayer->addScore(tile->getValue());
             this->board.setTile(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), tile);
-            
+
             // Repopulate the user's hand
             std::shared_ptr<Tile> newTile = this->bag->drawTile();
             currentPlayer->drawTile(newTile);

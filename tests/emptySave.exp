@@ -1,0 +1,21 @@
+Welcome to Scrabble!
+-------------------
+Menu
+----
+1. New Game
+2. Load Game
+3. Credits (Show student information)
+4. Quit
+5. DEBUG: Player + Hand Test
+> 
+Enter the filename from which load a game
+> That savefile is invalid. Please select a valid savefile
+
+Menu
+----
+1. New Game
+2. Load Game
+3. Credits (Show student information)
+4. Quit
+5. DEBUG: Player + Hand Test
+> 

@@ -132,9 +132,19 @@ Board::Board(std::string constructionString)
 
     std::vector<std::string> vectorStrings = splitString(constructionString, '\n');
 
+    if (vectorStrings.size() < 15)
+    {
+        throw std::exception();
+    }
+
     // Iterate over the actual board size
     for (int i = 0; i < BOARD_SIZE; i++)
     {
+        if (vectorStrings[i].size() < 15 * 4)
+        {
+            throw std::exception();
+        }
+
         this->board.push_back(std::vector<std::shared_ptr<Tile>>());
 
         for (int j = 0; j < BOARD_SIZE; j++)
