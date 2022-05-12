@@ -1,12 +1,17 @@
 #include <iostream>
 #include <vector>
 #include "utils.h"
+#include "eof_exception.h"
 
 std::string userInput()
 {
     std::cout << "> ";
     std::string returnValue;
     std::getline(std::cin, returnValue);
+    if (std::cin.eof())
+    {
+        throw eof_exception();
+    }
     return returnValue;
 }
 
