@@ -44,7 +44,7 @@ private:
     // Since some of the logic in placeTile needs to be performed in several
     // logical places, we split some of the code into a seperate function to
     // prevent code duplication
-    bool processPlacementInput(std::vector<std::string> inputString, std::vector<std::tuple<Letter, char, int>> &placedTiles, bool &done, int firstDoneCheck);
+    bool processPlacementInput(std::vector<std::string> inputString, std::vector<std::tuple<Letter, char, int>> &placedTiles, bool &done);
 
     // Check if the tile indicated is valid
     // If yes, replace it and return true

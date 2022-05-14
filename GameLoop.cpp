@@ -210,7 +210,14 @@ bool GameLoop::mainLoop()
         while ((!validInput) || repeatTurn)
         {   
 
-            
+            //if bag is empty and the player either has no tile in hand, then end the game
+            bool bagIsEmpty = (bag->getlength() == 0);
+            bool playerHasNoTiles = (currentPlayer->getNumTilesinHand() == 0);
+            if (bagIsEmpty && playerHasNoTiles){
+                terminate = true;
+                endOfGame = true;
+                break;
+            }
             std::vector<std::string> command = splitString(userInput(), ' ');
 
             std::string commandType = command[0];
@@ -278,14 +285,6 @@ bool GameLoop::mainLoop()
             }
         }
 
-        //if bag is empty and the player either has no tile in hand, then end the game
-        bool bagIsEmpty = (bag->getlength() == 0);
-        bool playerHasNoTiles = (currentPlayer->getNumTilesinHand() == 0);
-        if (bagIsEmpty && playerHasNoTiles){
-            terminate = true;
-            endOfGame = true;
-        }
-
         //if bingoCheck is 7, print "BINGO!" add binus 50 points
         std::cout << std::endl;
         if (bingoCheck==7){
@@ -317,7 +316,7 @@ bool GameLoop::mainLoop()
 // Another utility function to encapsulate input processing
 // This exists to reduce code duplication, since this action
 // must be performed in several logical places
-bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std::vector<PlacedTile> &placedTiles, bool &done, int firstDoneCheck)
+bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std::vector<PlacedTile> &placedTiles, bool &done)
 {
     bool isSuccessful = true;
     // All place operation must have 4 words.
@@ -327,16 +326,7 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
         // The only exception to this is the "place Done" command.
         if (initialInput.size() == 2 && initialInput[0] == "place" && initialInput[1] == "Done")
         {
-            if (firstDoneCheck!=1){
-                done = true;
-                for (long unsigned int i = 0; i < players.size(); i++)
-                {
-                    std::cout << std::string(*players.at(i)) << std::endl;
-                }
-            }
-            else{
-                isSuccessful = false;
-            }
+            done = true;
         }
         else
         {
@@ -411,22 +401,21 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 {
     bool isSuccessful = true;
     bool isDone = false;
-    int firstDoneCheck = 1;    //exit to the main loop if "place Done" entered in the first try
+
     // Tuple to store placed tiles for post-validation.
     // Tuples are TileLetter, coord1, coord2
     std::vector<PlacedTile> placedTiles;
 
-    isSuccessful = this->processPlacementInput(initialInput, placedTiles, isDone, firstDoneCheck);
+    isSuccessful = this->processPlacementInput(initialInput, placedTiles, isDone);
 
     // If the first command is invalid, return to the main turn loop
     while (isSuccessful && !isDone)
     {   
         ++bingo;
-        ++firstDoneCheck;
         // Once we have entered the placement loop, if an invalid command is entered,
         // ask for a valid one and do not return to the main loop until done
         std::vector<std::string> initialInput = splitString(userInput(), ' ');
-        bool isValidInput = this->processPlacementInput(initialInput, placedTiles, isDone, firstDoneCheck);
+        bool isValidInput = this->processPlacementInput(initialInput, placedTiles, isDone);
         if (!isValidInput)
         {
             std::cout << "Please enter a valid placement command" << std::endl;
@@ -530,10 +519,9 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
             this->board.setTile(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), tile);
 
             // Repopulate the user's hand
-            if (bag->getlength()!=0){
-                std::shared_ptr<Tile> newTile = this->bag->drawTile();
-                currentPlayer->drawTile(newTile);
-            }
+            std::shared_ptr<Tile> newTile = this->bag->drawTile();
+            currentPlayer->drawTile(newTile);
+
             // Calculate the points for any perpendicular words
             std::vector<std::shared_ptr<Tile>> possibleFormedWord = this->board.getWord(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), allAreSameLetter);
             // If the "word" length is 1, it's not a formed word
