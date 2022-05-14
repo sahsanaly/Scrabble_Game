@@ -27,7 +27,7 @@ void Hand::addTile(std::shared_ptr<Tile> tile)
     std::cout << tile->letter << std::endl;
     if (tileNotNull)
     {
-        std::cout << "Place tile: " << std::string(*tile);
+        // std::cout << "Place tile: " << std::string(*tile) << std::endl;
         tilesInHand->insert(tilesInHand->getLength(), tile);
     }
     
