@@ -289,7 +289,8 @@ bool GameLoop::mainLoop()
 
         //if bingoCheck is 7, print "BINGO!" add binus 50 points
         if (bingoCheck==7){
-            std::cout << "BINGO!" << std::endl;
+            std::cout << std::endl;
+            std::cout << "BINGO!!!" << std::endl;
             std::cout << std::endl;
             currentPlayer->addScore(50);
         }
