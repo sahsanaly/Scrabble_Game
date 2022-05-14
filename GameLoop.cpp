@@ -212,14 +212,6 @@ bool GameLoop::mainLoop()
         while ((!validInput) || repeatTurn)
         {   
 
-            //if bag is empty and the player either has no tile in hand, then end the game
-            bool bagIsEmpty = (bag->getlength() == 0);
-            bool playerHasNoTiles = (currentPlayer->getNumTilesinHand() == 0);
-            if (bagIsEmpty && playerHasNoTiles){
-                terminate = true;
-                endOfGame = true;
-                break;
-            }
             std::vector<std::string> command = splitString(userInput(), ' ');
 
             std::string commandType = command[0];
@@ -285,6 +277,14 @@ bool GameLoop::mainLoop()
             {
                 currentPlayerIndex = (currentPlayerIndex + 1) % NUM_PLAYERS;
             }
+        }
+
+        //if bag is empty and the player either has no tile in hand, then end the game
+        bool bagIsEmpty = (bag->getlength() == 0);
+        bool playerHasNoTiles = (currentPlayer->getNumTilesinHand() == 0);
+        if (bagIsEmpty && playerHasNoTiles){
+            terminate = true;
+            endOfGame = true;
         }
 
         //if bingoCheck is 7, print "BINGO!" add binus 50 points
