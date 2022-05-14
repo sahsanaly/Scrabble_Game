@@ -47,3 +47,12 @@ int Tile::getValue()
 
     return letter_values[this->letter];
 }
+
+Tile::operator std::string()
+{
+    std::string tileAsString = "";
+    tileAsString += letter;
+    tileAsString += "-" + std::to_string(this->getValue());
+
+    return tileAsString;
+}
