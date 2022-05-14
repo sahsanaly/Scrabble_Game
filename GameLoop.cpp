@@ -9,7 +9,7 @@
 
 GameLoop::GameLoop()
 {
-    std::cout << "Starting a new game" << std::endl;
+    std::cout << "Starting a New Game" << std::endl;
     std::cout << std::endl;
 
     bag = std::make_shared<Bag>();
@@ -54,8 +54,7 @@ GameLoop::GameLoop()
         std::cout << std::endl;
     }
 
-    std::cout << "Let's Play!" << std::endl
-              << std::endl;
+    std::cout << "Let's Play!" << std::endl;
 
     // Set up the bag
     //                        A, B, C, D,  E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
@@ -186,12 +185,14 @@ bool GameLoop::mainLoop()
     int bingoCheck;             //int check for the bingo, if it's 7 then output bingo!
     while (!terminate)
     {
-        std::cout << "In Mainloop" << std::endl;
-        std::cout << currentPlayerIndex << std::endl;
+        // std::cout << "In Mainloop" << std::endl;
+        // std::cout << currentPlayerIndex << std::endl;
         std::shared_ptr<Player> currentPlayer = this->players[currentPlayerIndex];
 
         // Output prompt
-        std::cout << currentPlayer->getName() << ", it's your turn" << std::endl;
+        std::cout << std::endl 
+        << currentPlayer->getName() << ", it's your turn" << std::endl;
+        
         for (int printingIndex = 0; printingIndex < NUM_PLAYERS; printingIndex++)
         {
             std::cout << "Score for " << this->players[printingIndex]->getName() << ": " << this->players[printingIndex]->getScore() << std::endl;
@@ -199,6 +200,7 @@ bool GameLoop::mainLoop()
         std::cout << this->board.convertToString() << std::endl;
         std::cout << "Your hand is" << std::endl;
         currentPlayer->printHand();
+        std::cout << std::endl;
 
         // Store the validness of the input into a seperate variable,
         // since all code paths have the possibility to be incorrect.
@@ -286,7 +288,6 @@ bool GameLoop::mainLoop()
         }
 
         //if bingoCheck is 7, print "BINGO!" add binus 50 points
-        std::cout << std::endl;
         if (bingoCheck==7){
             std::cout << "BINGO!" << std::endl;
             std::cout << std::endl;

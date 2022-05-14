@@ -30,7 +30,8 @@ int main(void)
              << "2. Load Game" << std::endl
              << "3. Credits (Show student information)" << std::endl
              << "4. Quit" << std::endl
-             << "5. DEBUG: Player + Hand Test" << std::endl;
+             << "5. DEBUG: Player + Hand Test" << std::endl
+             << std::endl;
 
          // Get user input
          std::string rawUserInput;
