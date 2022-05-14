@@ -179,9 +179,11 @@ GameLoop::~GameLoop()
     this->players.clear();
 }
 
-void GameLoop::mainLoop()
-{
-    bool terminate = false;
+bool GameLoop::mainLoop()
+{   
+    bool endOfGame = false;     //boolean for the end of game
+    bool terminate = false;     //termination of the game
+    int bingoCheck;             //int check for the bingo, if it's 7 then output bingo!
     while (!terminate)
     {
         std::cout << "In Mainloop" << std::endl;
@@ -203,8 +205,18 @@ void GameLoop::mainLoop()
         bool validInput = false;
         bool repeatTurn = false;
 
+        bingoCheck = 0;         //int for bingo check
+        currentPlayer->passCount=0;    //passCount to zero at every turn
+
         while ((!validInput) || repeatTurn)
-        {
+        {   
+
+            //if bag is empty and no tile in hand then end the game
+            if (bag->getlength()==0 && currentPlayer->getNumTilesinHand() == 0){
+                terminate = true;
+                endOfGame = true;
+                break;
+            }
             std::vector<std::string> command = splitString(userInput(), ' ');
 
             std::string commandType = command[0];
@@ -212,15 +224,36 @@ void GameLoop::mainLoop()
 
             if (commandType == "place")
             {
-                validInput = this->placeTile(command, currentPlayer);
+                validInput = this->placeTile(command, currentPlayer, bingoCheck);
+
+                //if there has been a pass before then reset the passCount
+                if (currentPlayer->passCount>0){
+                    currentPlayer->passCount=0;
+                }
+                // if there is an invalid command then restart the bingo count from the next set of place command
+                if (!validInput){
+                    bingoCheck = 0;
+                }
             }
             else if (commandType == "replace")
             {
                 validInput = this->replaceTile(command, currentPlayer);
+
+                //if there has been a pass before then reset the passCount
+                if (currentPlayer->passCount>0){
+                    currentPlayer->passCount=0;
+                }
             }
             else if (commandType == "pass")
             {
                 validInput = true;
+                
+                //increament the 
+                ++(currentPlayer->passCount);
+                if (bag->getlength()==0 && currentPlayer->passCount==2){
+                    terminate = true;
+                    endOfGame = true;
+                }
                 // Passing is just doing nothing, so we do nothing
                 // We will eventually need to track when a player passes,
                 // since the game ends if a player passes twice
@@ -251,7 +284,33 @@ void GameLoop::mainLoop()
                 currentPlayerIndex = (currentPlayerIndex + 1) % NUM_PLAYERS;
             }
         }
+
+        //if bingoCheck is 7, print "BINGO!" add binus 50 points
+        std::cout << std::endl;
+        if (bingoCheck==7){
+            std::cout << "BINGO!" << std::endl;
+            std::cout << std::endl;
+            currentPlayer->addScore(50);
+        }
+
     }
+
+    if (endOfGame==true){
+        std::cout << "Game over" << std::endl;
+        std::cout << "Score for " << players[0]->getName() << ": " << players[0]->getScore() << std::endl;
+        std::cout << "Score for " << players[1]->getName() << ": " << players[1]->getScore() << std::endl;
+        if (players[0]->getScore() > players[1]->getScore()){
+            std::cout << players[0]->getName() << " won!" << std::endl;
+        }
+        else if (players[1]->getScore() > players[0]->getScore()){
+            std::cout << "Player " << players[1]->getName() << " won!" << std::endl;
+        }
+        else{
+            std::cout << "Game drawn!" << std::endl;
+        }
+    }
+    
+    return endOfGame;
 }
 
 // Another utility function to encapsulate input processing
@@ -342,7 +401,7 @@ bool sortingTileIntComparison(PlacedTile i, PlacedTile j)
     return std::get<2>(i) < std::get<2>(j);
 }
 
-bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<Player> currentPlayer)
+bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<Player> currentPlayer, int& bingo)
 {
     bool isSuccessful = true;
     bool isDone = false;
@@ -355,7 +414,8 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 
     // If the first command is invalid, return to the main turn loop
     while (isSuccessful && !isDone)
-    {
+    {   
+        ++bingo;
         // Once we have entered the placement loop, if an invalid command is entered,
         // ask for a valid one and do not return to the main loop until done
         std::vector<std::string> initialInput = splitString(userInput(), ' ');
@@ -363,6 +423,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
         if (!isValidInput)
         {
             std::cout << "Please enter a valid placement command" << std::endl;
+            --bingo;
         }
     }
 

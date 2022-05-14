@@ -18,6 +18,9 @@ public:
    // Grab the head tile.
    std::shared_ptr<Tile> drawTile();
 
+   //return the number of tiles in the bag
+   int getlength();
+
    // Shuffle the bag (by default during initiation)
    void shuffle();
 
@@ -26,6 +29,7 @@ public:
 
 private:
    std::shared_ptr<LinkedList> tilesInBag;
+   int length; //number of tiles in the bag
 };
 
 #endif

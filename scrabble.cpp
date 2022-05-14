@@ -16,7 +16,7 @@ int main(void)
    std::cout << "-------------------" << std::endl;
 
    bool terminate = false;
-
+   bool endOFGame = false;
    // Main loop
    while (!terminate)
    {
@@ -51,7 +51,11 @@ int main(void)
          if (intUserInput == 1)
          {
             GameLoop game;
-            game.mainLoop();
+            endOFGame = game.mainLoop();
+            //if endOFGame is true, terminate the game in special case of Ending the Game
+            if (endOFGame==true){
+               terminate=true;
+            }
          }
          else if (intUserInput == 2)
          {
@@ -104,7 +108,6 @@ int main(void)
          else if (intUserInput == 4)
          {
             // Quit
-            std::cout << "Goodbye" << std::endl;
             terminate = true;
          }
          else if (intUserInput == 5)
@@ -153,6 +156,10 @@ int main(void)
       {
          terminate = true;
       }
+
+      std::cout << std::endl;
+      std::cout << "Goodbye!" << std::endl;
+
    }
 
    return EXIT_SUCCESS;
