@@ -427,6 +427,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
     // These variables are placed outside the block so that they can be used later on
     bool allAreSameLetter = true;
     bool allAreSameNumber = true;
+
     if (isSuccessful)
     {
         // Determine whether the tiles are in a line.
@@ -438,6 +439,12 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
         for (int i = 0; (std::size_t)i < placedTiles.size() && allAreSameNumber; i++)
         {
             allAreSameNumber = std::get<2>(placedTiles[i]) == std::get<2>(placedTiles[0]);
+        }
+
+        if (placedTiles.size() == 0)
+        {
+            allAreSameLetter = false;
+            allAreSameNumber = false;
         }
 
         // If the tiles are in a line, check there are no gaps between the tiles
