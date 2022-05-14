@@ -1,0 +1,12 @@
+2
+test
+replace n
+REPLACE N
+PASS
+place b at D1
+place B at D1r
+place B at D1R
+place done
+PLACE B AT D1
+place B at D1
+place Done
