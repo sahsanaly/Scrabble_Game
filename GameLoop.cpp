@@ -366,14 +366,7 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
         {
             isSuccessful = false;
         }
-        // If the fourth word has a third character, it must be a number
-        else if (initialInput[3].size() == 3)
-        {
-            if (!isdigit(initialInput[1][2]))
-            {
-                isSuccessful = false;
-            }
-        }
+        
         // The input is valid. Now to parse and process
         else
         {
@@ -588,10 +581,16 @@ bool GameLoop::replaceTile(std::vector<std::string> initialCommand, std::shared_
                 isSuccessful = false;
             }
             else
-            {
-                // Move the tile back to the bag.
-                this->bag->addTile(tileToReplace);
-                currentPlayer->drawTile(this->bag->drawTile());
+            {   
+                if (bag->getlength()!=0){
+                    // Move the tile back to the bag.
+                    this->bag->addTile(tileToReplace);
+                    currentPlayer->drawTile(this->bag->drawTile());
+                }else{
+                    std::cout << "Bag is empty!" << std::endl;
+                    isSuccessful = false;
+                }
+
             }
         }
     }
