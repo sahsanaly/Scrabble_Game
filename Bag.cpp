@@ -22,10 +22,20 @@ bool Bag::addTile(std::shared_ptr<Tile> tile)
     return true;
 }
 
+// Draw a tile from the bag. 
+// If there are no tiles, return a null tile.
 std::shared_ptr<Tile> Bag::drawTile()
 {
-    std::shared_ptr<Tile> returnValue = tilesInBag->get(0);
-    tilesInBag->remove(0);
+    // Create a null tile.
+    std::shared_ptr<Tile> returnValue = std::make_shared<Tile>();
+
+    bool bagNotEmpty = (this->getlength() > 0);
+
+    if (bagNotEmpty) {
+        returnValue = tilesInBag->get(0);
+        tilesInBag->remove(0);
+    }
+
     return returnValue;
 }
 
