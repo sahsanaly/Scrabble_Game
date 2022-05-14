@@ -24,7 +24,6 @@ Hand::~Hand()
 void Hand::addTile(std::shared_ptr<Tile> tile)
 {
     bool tileNotNull = (tile->letter != 0);
-    std::cout << tile->letter << std::endl;
     if (tileNotNull)
     {
         // std::cout << "Place tile: " << std::string(*tile) << std::endl;
