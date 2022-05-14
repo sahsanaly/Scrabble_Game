@@ -80,7 +80,7 @@ int main(void)
 
             if (successfulLoad)
             {
-               std::cout << "Starting mainLoop" << std::endl;
+               // std::cout << "Starting mainLoop" << std::endl;
                game->mainLoop();
             }
          }
