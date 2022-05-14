@@ -74,7 +74,8 @@ int main(void)
             // Use the
             catch (std::exception &unused)
             {
-               std::cout << "That savefile is invalid. Please select a valid savefile" << std::endl;
+               std::cout << std::endl << "That savefile is invalid. Please select a valid savefile" << std::endl
+                  << std::endl;
                successfulLoad = false;
             }
 
@@ -149,8 +150,6 @@ int main(void)
          {
             std::cout << "Invalid input, please input a valid number between 1-4" << std::endl;
          }
-
-         std::cout << std::endl;
       }
       // If the user ever enters an EOF character, execution will jump back to here and terminate
       catch (eof_exception &unused)
@@ -158,8 +157,10 @@ int main(void)
          terminate = true;
       }
 
-      std::cout << std::endl;
-      std::cout << "Goodbye!" << std::endl;
+      if (terminate)
+      {
+         std::cout << "Goodbye!" << std::endl;
+      }
 
    }
 
