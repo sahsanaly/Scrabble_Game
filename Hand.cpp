@@ -4,19 +4,16 @@
 Hand::Hand()
 {
     this->tilesInHand = std::make_shared<LinkedList>();
-    this->lengthHand = 0;       //num of the tiles in hand
 }
 
 Hand::Hand(Hand &other)
 {
     this->tilesInHand = other.getTilesInHand();
-    this->lengthHand = other.lengthHand;
 }
 
 Hand::Hand(std::string constructionString)
 {
     this->tilesInHand = std::make_shared<LinkedList>(constructionString);
-    this->lengthHand = this->tilesInHand->getLength();
 }
 
 Hand::~Hand()
@@ -27,7 +24,6 @@ Hand::~Hand()
 void Hand::addTile(std::shared_ptr<Tile> tile)
 {
     tilesInHand->insert(tilesInHand->getLength(), tile);
-    ++lengthHand;
     return;
 }
 
@@ -37,20 +33,18 @@ void Hand::removeTile(Letter letter)
     int indexTileInHand = tilesInHand->search(letter);
 
     tilesInHand->remove(indexTileInHand);
-    --this->lengthHand;
     return;
 }
 
 void Hand::removeTile(std::shared_ptr<Tile> tile)
 {
     removeTile(tile->letter);
-    --lengthHand;
     return;
 }
 
 int Hand::getHandLength(){
 
-    return this->lengthHand;        //number of tiles in hand
+    return this->tilesInHand->getLength();        //number of tiles in hand
 }
 
 std::shared_ptr<Tile> Hand::getTile(Letter letter)

@@ -44,8 +44,6 @@ private:
    // List of Tiles in Hand
    std::shared_ptr<LinkedList> tilesInHand;
 
-   //number of tiles in player's hand
-   int lengthHand;
 };
 
 #endif // ASSIGN2_HAND_H
