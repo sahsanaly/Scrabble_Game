@@ -206,13 +206,14 @@ bool GameLoop::mainLoop()
         bool repeatTurn = false;
 
         bingoCheck = 0;         //int for bingo check
-        currentPlayer->passCount=0;    //passCount to zero at every turn
 
         while ((!validInput) || repeatTurn)
         {   
 
-            //if bag is empty and no tile in hand then end the game
-            if (bag->getlength()==0 && currentPlayer->getNumTilesinHand() == 0){
+            //if bag is empty and the player either has no tile in hand, then end the game
+            bool bagIsEmpty = (bag->getlength() == 0);
+            bool playerHasNoTiles = (currentPlayer->getNumTilesinHand() == 0);
+            if (bagIsEmpty && playerHasNoTiles){
                 terminate = true;
                 endOfGame = true;
                 break;
@@ -248,15 +249,14 @@ bool GameLoop::mainLoop()
             {
                 validInput = true;
                 
-                //increament the 
+                //Increment the player's pass count.
                 ++(currentPlayer->passCount);
+
+                // If the player has passed twice, terminate the game!
                 if (bag->getlength()==0 && currentPlayer->passCount==2){
                     terminate = true;
                     endOfGame = true;
                 }
-                // Passing is just doing nothing, so we do nothing
-                // We will eventually need to track when a player passes,
-                // since the game ends if a player passes twice
             }
             else if (commandType == "save")
             {
