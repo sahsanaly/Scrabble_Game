@@ -29,7 +29,6 @@ public:
 
 private:
    std::shared_ptr<LinkedList> tilesInBag;
-   int length; //number of tiles in the bag
 };
 
 #endif

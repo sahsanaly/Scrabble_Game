@@ -5,7 +5,6 @@
 Bag::Bag()
 {
     this->tilesInBag = std::make_shared<LinkedList>();
-    this->length = 0;  //number of tiles in the bag
 }
 
 Bag::Bag(std::string constructionString)
@@ -20,7 +19,6 @@ Bag::~Bag()
 bool Bag::addTile(std::shared_ptr<Tile> tile)
 {
     tilesInBag->insert(tilesInBag->getLength(), tile);
-    ++length;
     return true;
 }
 
@@ -28,12 +26,11 @@ std::shared_ptr<Tile> Bag::drawTile()
 {
     std::shared_ptr<Tile> returnValue = tilesInBag->get(0);
     tilesInBag->remove(0);
-    --length;
     return returnValue;
 }
 
 int Bag::getlength(){
-    return this->length;  //get number of tiles in the bag
+    return this->tilesInBag->getLength();  //get number of tiles in the bag
 }
 
 void Bag::shuffle()
