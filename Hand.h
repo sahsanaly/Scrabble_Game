@@ -10,17 +10,18 @@ class Hand
 public:
    Hand();
    Hand(Hand &other);
+   Hand(std::string constructionString);
    ~Hand();
 
    // Add specific tile to hand
    void addTile(std::shared_ptr<Tile> tile);
-   
+
    // Remove tile from hand
    void removeTile(Letter letter);
-   
+
    // Remove tile from hand
    void removeTile(std::shared_ptr<Tile> tile);
-   
+
    // Find the first tile with the desired letter and return its pointer. Return NULL if not found.
    std::shared_ptr<Tile> getTile(Letter letter);
 
@@ -29,7 +30,7 @@ public:
 
    // Return all tiles in this hand.
    std::shared_ptr<LinkedList> getTilesInHand();
-   
+
    // Print the String format of the Hand.
    void print();
 
@@ -41,4 +42,4 @@ private:
    std::shared_ptr<LinkedList> tilesInHand;
 };
 
-#endif //ASSIGN2_HAND_H
+#endif // ASSIGN2_HAND_H

@@ -4,7 +4,7 @@
 Tile::Tile()
 {
     // Store the letter and value
-    this->letter = ' ';
+    this->letter = 0;
 }
 
 Tile::Tile(Letter letter)

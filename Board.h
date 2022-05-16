@@ -10,6 +10,7 @@ class Board
 {
 public:
     Board();
+    Board(std::string constructionString);
     std::shared_ptr<Tile> getTile(char coord1, int coord2);
     void setTile(char coord1, int coord2, std::shared_ptr<Tile> tile);
     std::string convertToString();

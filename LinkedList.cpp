@@ -2,12 +2,10 @@
 #include "LinkedList.h"
 #include <iostream>
 #include <stdexcept>
+#include "utils.h"
 
 LinkedList::LinkedList()
 {
-   this->head = nullptr;
-   this->tail = nullptr;
-   this->length = 0;
 }
 
 LinkedList::~LinkedList()
@@ -41,9 +39,9 @@ std::shared_ptr<Tile> LinkedList::get(int index)
 int LinkedList::search(std::shared_ptr<Tile> tile)
 {
    int returnValue;
-   
+
    returnValue = search(tile->letter);
-   
+
    return returnValue;
 }
 
@@ -152,7 +150,7 @@ void LinkedList::remove(int index)
 void LinkedList::insert(int index, std::shared_ptr<Tile> tile)
 {
    std::shared_ptr<Node> insertedNode = std::make_shared<Node>(tile, nullptr, nullptr);
-   if (index - 1 > this->length && index >= 0)
+   if (index - 1 > this->length || index < 0)
    {
       throw std::out_of_range("Index out of range");
    }
@@ -256,6 +254,18 @@ LinkedList::operator std::string()
    return linkedListAsString;
 }
 
+// Inverse of the string conversion function
+LinkedList::LinkedList(std::string constructionString)
+{
+   // Splitting by space rather than comma puts the tile character at the start of the string
+   std::vector<std::string> tileStrings = splitString(constructionString, ' ');
+
+   for (std::string tileString : tileStrings)
+   {
+      this->insert(this->getLength(), std::make_shared<Tile>(tileString[0]));
+   }
+}
+
 void LinkedList::print()
 {
    std::string linkedListAsString = std::string(*this);
@@ -266,5 +276,5 @@ void LinkedList::print()
    else
    {
       std::cout << "Empty List" << std::endl;
-   }  
+   }
 }

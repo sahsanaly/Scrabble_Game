@@ -15,7 +15,7 @@ public:
     // Default loader
     GameLoop();
     // Save game loader
-    GameLoop(std::string saveFileName);
+    GameLoop(std::string saveFilename);
 
     ~GameLoop();
     // Main game loop.
@@ -31,7 +31,7 @@ private:
     std::vector<std::shared_ptr<Player>> players;
 
     Board board;
-    Bag bag;
+    std::shared_ptr<Bag> bag;
     int currentPlayerIndex;
 
     // Parse the inital command

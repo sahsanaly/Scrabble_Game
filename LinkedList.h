@@ -10,6 +10,8 @@ class LinkedList
 {
 public:
    LinkedList();
+   // Inverse of the string representation.
+   LinkedList(std::string constructionString);
    ~LinkedList();
 
    // Get length of object
@@ -17,7 +19,7 @@ public:
 
    // Get tile at index
    std::shared_ptr<Tile> get(int index);
-   
+
    // Index first tile with letter (of tile)
    int search(std::shared_ptr<Tile> tile);
 
@@ -35,7 +37,7 @@ public:
 
    // String representation of object
    operator std::string();
-   
+
    // Print String representation of object
    void print();
 
@@ -44,13 +46,13 @@ private:
    std::shared_ptr<Node> traverse(int index);
 
    // The first Node in the List
-   std::shared_ptr<Node> head;
+   std::shared_ptr<Node> head = nullptr;
 
    // The final Node in the List
-   std::shared_ptr<Node> tail;
+   std::shared_ptr<Node> tail = nullptr;
 
    // Length of List
-   int length;
+   int length = 0;
 };
 
 #endif // ASSIGN2_LINKEDLIST_H

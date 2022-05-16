@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <iostream>
 
 // These functions are by no means complete. Just something to try and make the main loop run.
 // Tear them out and do them properly when implementing this file please.
@@ -14,6 +15,13 @@ Player::Player(Player &other)
     this->name = other.name;
     this->score = other.score;
     this->hand = std::make_shared<Hand>(*other.hand);
+}
+
+Player::Player(std::string name, std::string score, std::string handString)
+{
+    this->name = name;
+    this->score = std::stoi(score);
+    this->hand = std::make_shared<Hand>(handString);
 }
 
 Player::~Player()

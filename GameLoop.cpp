@@ -1,40 +1,20 @@
 #include "GameLoop.h"
 #include <iostream>
 #include <fstream>
-#include "userInput.h"
+#include "utils.h"
 #include <algorithm>
-
-#define NUM_PLAYERS 2
-
-// Splits a string, using a specified character as the delimiter between substrings
-// Utility function used for parsing user input
-std::vector<std::string> splitString(std::string inputString, char splittingChar)
-{
-    std::vector<std::string> returnValue;
-    int processedIndex = 0;
-
-    bool terminate = false;
-    while (!terminate)
-    {
-        int splittingCharIndex = inputString.find(splittingChar, processedIndex + 1);
-        std::string word = inputString.substr(processedIndex, splittingCharIndex - processedIndex);
-        returnValue.push_back(word);
-        if (splittingCharIndex == -1)
-        {
-            terminate = true;
-        }
-        processedIndex = splittingCharIndex + 1;
-    }
-
-    return returnValue;
-}
+#include "defines.h"
+#include <sstream>
+#include <exception>
 
 GameLoop::GameLoop()
 {
     std::cout << "Starting a new game" << std::endl;
     std::cout << std::endl;
 
-    currentPlayerIndex = 0;
+    bag = std::make_shared<Bag>();
+
+    this->currentPlayerIndex = 0;
 
     for (int playerIndex = 0; playerIndex < NUM_PLAYERS; playerIndex++)
     {
@@ -78,7 +58,7 @@ GameLoop::GameLoop()
               << std::endl;
 
     // Set up the bag
-    //                  A, B, C, D,  E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+    //                        A, B, C, D,  E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
     const int quantities[] = {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
 
     // This magical code uses int->char conversions to create the correct number of each tile
@@ -87,19 +67,110 @@ GameLoop::GameLoop()
         for (int i = 0; i < quantities[charIndex]; i++)
         {
             // 65 is the ascii value of A. This generates the relevant character based on charIndex
-            bag.addTile(std::make_shared<Tile>((Letter)65 + charIndex));
+            std::shared_ptr<Tile> newTile = std::make_shared<Tile>((Letter)65 + charIndex);
+            bag->addTile(newTile);
         }
     }
 
-    bag.shuffle();
+    bag->shuffle();
 
     for (std::shared_ptr<Player> player : this->players)
     {
         for (int i = 0; i < 7; i++)
         {
-            std::shared_ptr<Tile> tile = this->bag.drawTile();
+            std::shared_ptr<Tile> tile = this->bag->drawTile();
             player->drawTile(tile);
         }
+    }
+}
+
+GameLoop::GameLoop(std::string saveFilename)
+{
+    std::ifstream saveFile("saves/" + saveFilename + ".txt");
+
+    std::string playerName = "";
+    std::getline(saveFile, playerName);
+
+    std::string playerScoreStr = "";
+    std::getline(saveFile, playerScoreStr);
+
+    std::string playerHandStr = "";
+    std::getline(saveFile, playerHandStr);
+
+    bool isPlayer = (playerName.at(0) != ' ');
+
+    while (isPlayer)
+    {
+        std::shared_ptr<Player> newPlayer = std::make_shared<Player>(playerName, playerScoreStr, playerHandStr);
+
+        int playerScore = std::stoi(playerScoreStr);
+        newPlayer->addScore(playerScore);
+
+        this->players.push_back(newPlayer);
+
+        // If there is nothing to read, std::getline will leave the player strings in place, infinitely loading the same player
+        // Resetting them prevents this
+        playerName = "";
+        playerScoreStr = "";
+        playerHandStr = "";
+
+        std::getline(saveFile, playerName);
+        isPlayer = (playerName.at(0) != ' ');
+        if (isPlayer)
+        {
+            std::getline(saveFile, playerScoreStr);
+            std::getline(saveFile, playerHandStr);
+        }
+    }
+
+    if (this->players.size() != 2)
+    {
+        throw std::exception();
+    }
+
+    // First header line already taken to check name.
+    // Dump second line.
+    std::string dumpBoardHeading = "";
+    std::getline(saveFile, dumpBoardHeading);
+
+    std::stringstream boardString;
+
+    // Read the board body
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        char thisChar;
+        do
+        {
+            saveFile.get(thisChar);
+            boardString << thisChar;
+        } while (thisChar != '\n');
+    }
+
+    this->board = Board(boardString.str());
+
+    std::string bagString;
+    std::getline(saveFile, bagString);
+    this->bag = std::make_shared<Bag>(bagString);
+
+    std::string startingPlayerName;
+    std::getline(saveFile, startingPlayerName);
+
+    int startingPlayerIndex = -1;
+    for (int i = 0; i < NUM_PLAYERS && startingPlayerIndex == -1; i++)
+    {
+        if (this->players[i]->getName() == startingPlayerName)
+        {
+            startingPlayerIndex = i;
+        }
+    }
+
+    if (startingPlayerIndex == -1)
+    {
+        throw std::exception();
+    }
+    else
+    {
+        this->currentPlayerIndex = startingPlayerIndex;
     }
 }
 
@@ -113,6 +184,8 @@ void GameLoop::mainLoop()
     bool terminate = false;
     while (!terminate)
     {
+        std::cout << "In Mainloop" << std::endl;
+        std::cout << currentPlayerIndex << std::endl;
         std::shared_ptr<Player> currentPlayer = this->players[currentPlayerIndex];
 
         // Output prompt
@@ -175,7 +248,7 @@ void GameLoop::mainLoop()
             }
             else if (!repeatTurn)
             {
-                currentPlayerIndex += 1;
+                currentPlayerIndex = (currentPlayerIndex + 1) % NUM_PLAYERS;
             }
         }
     }
@@ -195,6 +268,10 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
         if (initialInput.size() == 2 && initialInput[0] == "place" && initialInput[1] == "Done")
         {
             done = true;
+            for (long unsigned int i = 0; i < players.size(); i++)
+            {
+                std::cout << std::string(*players.at(i)) << std::endl;
+            }
         }
         else
         {
@@ -377,7 +454,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 
     if (isSuccessful)
     {
-        std::cout << "potato" << std::endl;
+        // Check that tiles are adjacent to other tiles or in the center of the board.
         std::tuple<char, int> startTuple = {std::get<1>(placedTiles[0]), std::get<2>(placedTiles[0])};
         std::tuple<char, int> endTuple = {std::get<1>(placedTiles[placedTiles.size() - 1]), std::get<2>(placedTiles[placedTiles.size() - 1])};
 
@@ -396,7 +473,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
             this->board.setTile(std::get<1>(tileToBePlaced), std::get<2>(tileToBePlaced), tile);
 
             // Repopulate the user's hand
-            std::shared_ptr<Tile> newTile = this->bag.drawTile();
+            std::shared_ptr<Tile> newTile = this->bag->drawTile();
             currentPlayer->drawTile(newTile);
 
             // Calculate the points for any perpendicular words
@@ -459,8 +536,8 @@ bool GameLoop::replaceTile(std::vector<std::string> initialCommand, std::shared_
             else
             {
                 // Move the tile back to the bag.
-                this->bag.addTile(tileToReplace);
-                currentPlayer->drawTile(this->bag.drawTile());
+                this->bag->addTile(tileToReplace);
+                currentPlayer->drawTile(this->bag->drawTile());
             }
         }
     }
@@ -478,7 +555,8 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand)
 
         outfile.open("saves/" + filename + ".txt");
 
-        for (int i = 0; i < static_cast<int>(players.size()); i++)
+        
+        for (long unsigned int i = 0; i < players.size(); i++)
         {
             std::shared_ptr<Player> player = players.at(i);
             outfile << std::string(*player) << std::endl;
@@ -486,7 +564,7 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand)
 
         outfile << board.convertToString();
 
-        outfile << std::string(bag) << std::endl;
+        outfile << std::string(*bag) << std::endl;
 
         std::shared_ptr<Player> currentPlayer = this->players[currentPlayerIndex];
 
@@ -516,7 +594,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
     //If any adjacent tiles have tiles present, if they do return true.
     //Else if first turn of the game make sure word is placed center of board.
 
-    //TODO: If board is empty, make sure at least one tile is on the center of the board.
+
     bool validWord = false;
 
     char startChar = std::get<0>(startPos);
@@ -524,61 +602,192 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
     char endChar = std::get<0>(endPos);
     int endInt = std::get<1>(endPos);
     std::vector<std::tuple<char, int>> toCheck;
-    // If the center tile is empty, center tile must be used.
     
     
     
-
+    
+    //If all tiles placed ar in a horizontal line (Same character val)
     if (startChar == endChar)
     {
-        std::cout << "samechar" << std::endl;
-        if (this->board.getTile('H', 8) == 0 && startChar == 'H' && startInt <= 8 && endInt >= 8){
-
+        std::cout << "samechar" << std::endl;//debugging
+        // If the center tile is empty and word will be placed there.
+        if (this->board.getTile('H', 8) == 0 /*&& startChar == 'H' && startInt <= 8 && endInt >= 8*/){
+            validWord = true;
             std::cout << "samechar center" << std::endl;
-            std::tuple<char, int> tupleToInsert = {startChar, startInt - 1};
-            toCheck.push_back(tupleToInsert);
+        }else{
 
-            tupleToInsert = {startChar, endInt + 1};
-            toCheck.push_back(tupleToInsert);
+            //If tile is on an edge, we should not check off
+            //the surrounding edges for previously placed tiles.
+            if (startInt != 1)
+            {
+                //Add tile to the left of the word to the list of tiles to check.
+                // std::cout << "startInt 1" << std::endl;
+                std::tuple<char, int> tupleToInsert = {startChar, startInt - 1};
+                toCheck.push_back(tupleToInsert);
+            }
+            // std::cout << "outof startint1" << std::endl;
+            
+            if (endInt != 15)
+            {
+                //Add tile to right of word to list of tiles to check.
+                std::tuple<char, int> tupleToInsert = {startChar, endInt + 1};
+                toCheck.push_back(tupleToInsert);
+            }
+            
 
             for (int i = startInt; i <= endInt; i++)
             {
-                tupleToInsert = {startChar - 1, i};
-                toCheck.push_back(tupleToInsert);
-                tupleToInsert = {startChar + 1, i};
-                toCheck.push_back(tupleToInsert);
+                //Same goes here, if tile is on an edge, we should not check off
+                //the surrounding edges for previously placed tiles.
+                if (startChar != 'A')
+                {
+                    // std::cout << "samechar 1" << std::endl;
+                    //Add tiles above word to check.
+                    std::tuple<char, int> tupleToInsert = {startChar - 1, i};
+                    toCheck.push_back(tupleToInsert);
+                }
+                // std::cout << "out of samechar1" << std::endl;
+
+                if (endChar != 'O')
+                {
+                    //Add tiles below to check.
+                    std::tuple<char, int> tupleToInsert = {startChar + 1, i};
+                    toCheck.push_back(tupleToInsert);
+                }
             }
         }
         
     }else{
-        std::cout << "sameint" << std::endl;
+        // std::cout << "sameint" << std::endl;
         if (this->board.getTile('H', 8) == 0 && startInt == 8 && startChar <= 'H' && endChar >= 'H'){
-            std::cout << "sameint center" << std::endl;
-            std::tuple<char, int> tupleToInsert = {startChar - 1, startInt};
-            toCheck.push_back(tupleToInsert);
-
-            tupleToInsert = {startChar + 1, endInt};
-            toCheck.push_back(tupleToInsert);
-
+            validWord = true;
+        }else{
+            // std::cout << "sameint center" << std::endl;
+            // More checking of edges
+            if (startChar != 'A')
+            {
+                //Add tile above word to list to check.
+                std::tuple<char, int> tupleToInsert = {startChar - 1, startInt};
+                toCheck.push_back(tupleToInsert);
+            }
+            
+            
+            if (endChar != 'O')
+            {
+                //Add tile below word to list to check.
+                std::tuple<char, int> tupleToInsert = {startChar + 1, endInt};
+                toCheck.push_back(tupleToInsert);
+            }
+            
+            
             for (int i = startChar; i <= endChar; i++)
             {
-                tupleToInsert = {i, startInt - 1};
-                toCheck.push_back(tupleToInsert);
-                tupleToInsert = {i, startInt + 1};
-                toCheck.push_back(tupleToInsert);
+                // Still checking edges.
+                if (startInt != 1)
+                {
+                    //Add tiles to left to check
+                    std::tuple<char, int> tupleToInsert = {i, startInt - 1};
+                    toCheck.push_back(tupleToInsert);
+                }
+
+                if (startInt != 15)
+                {
+                    //Add tiles to right to check.
+                    std::tuple<char, int> tupleToInsert = {i, startInt + 1};
+                    toCheck.push_back(tupleToInsert);
+                }
             }
         }
     }
-
-    for (std::tuple<char, int> tileToCheck : toCheck)
+    
+    std::cout << "out of list making loop" << std::endl;
+    //If the word is not in the center and the list is not empty.
+    if(!validWord && toCheck.size() > 0)
     {
-        if (this->board.getTile(std::get<0>(tileToCheck), std::get<1>(tileToCheck)) != 0)
+        std::cout << "toCheck entered" << std::endl;
+        for (std::tuple<char, int> tileToCheck : toCheck)
         {
+            std::cout << "for loop entered" << std::endl;
+            // For each tile surrounding the word, if it is not empty, the word placement is valid.
+            if (this->board.getTile(std::get<0>(tileToCheck), std::get<1>(tileToCheck)) != 0)
+            {
+                std::cout << "in the if statement" << std::endl;
+                validWord = true;
+            }
+            std::cout << "after the if statement" << std::endl;
             validWord = true;
+        
         }
         
     }
     
+    
     return validWord;
     
 }
+// Accidentally made this twice due to miscommunication within the team.
+// This is an alternate version that is designed to allow for multiple player
+
+// GameLoop::GameLoop(std::string saveFilename)
+// {
+//     std::ifstream file;
+//     try
+//     {
+//         file.open("saves/" + saveFilename + ".txt");
+//     }
+//     catch (const std::exception &e)
+//     {
+//         std::cerr << e.what() << '\n';
+//     }
+
+//     std::string playerName = "";
+//     std::getline(file, playerName);
+
+//     std::string playerScoreStr = "";
+//     std::getline(file, playerScoreStr);
+
+//     std::string playerTilesStr = "";
+//     std::getline(file, playerTilesStr);
+
+//     bool isPlayer = (playerName.at(0) != ' ');
+
+//     while (isPlayer)
+//     {
+//         std::cout << "New player: " << playerName << std::endl;
+//         std::shared_ptr<Player> newPlayer = std::make_shared<Player>(playerName);
+
+//         int playerScore = std::stoi(playerScoreStr);
+//         newPlayer->addScore(playerScore);
+
+//         this->players.push_back(newPlayer);
+
+//         int prevSplitterIndex = 0;
+
+//         bool endOfLine = false;
+
+//         while (!endOfLine)
+//         {
+//             int splittingCharIndex = playerTilesStr.find(',', prevSplitterIndex + 1);
+//             std::string tileStr = playerTilesStr.substr(prevSplitterIndex, splittingCharIndex - prevSplitterIndex);
+//             Letter letterToAdd = tileStr.at(0);
+
+//             std::shared_ptr<Tile> newTile = std::make_shared<Tile>(letterToAdd);
+//             newPlayer->drawTile(newTile);
+
+//             // std::cout << splittingCharIndex << std::endl;
+//             if (splittingCharIndex == -1)
+//             {
+//                 endOfLine = true;
+//             }
+
+//             prevSplitterIndex = splittingCharIndex + 2;
+//         }
+//         std::getline(file, playerName);
+//         isPlayer = (playerName.at(0) != ' ');
+//         if (isPlayer)
+//         {
+//             std::getline(file, playerScoreStr);
+//             std::getline(file, playerTilesStr);
+//         }
+//     }
+// }
