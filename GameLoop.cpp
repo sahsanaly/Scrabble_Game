@@ -179,10 +179,10 @@ GameLoop::~GameLoop()
 }
 
 bool GameLoop::mainLoop()
-{   
-    bool endOfGame = false;     //boolean for the end of game
-    bool terminate = false;     //termination of the game
-    int bingoCheck;             //int check for the bingo, if it's 7 then output bingo!
+{
+    bool endOfGame = false; // boolean for the end of game
+    bool terminate = false; // termination of the game
+    int bingoCheck;         // int check for the bingo, if it's 7 then output bingo!
     while (!terminate)
     {
         // std::cout << "In Mainloop" << std::endl;
@@ -190,9 +190,9 @@ bool GameLoop::mainLoop()
         std::shared_ptr<Player> currentPlayer = this->players[currentPlayerIndex];
 
         // Output prompt
-        std::cout << std::endl 
-        << currentPlayer->getName() << ", it's your turn" << std::endl;
-        
+        std::cout << std::endl
+                  << currentPlayer->getName() << ", it's your turn" << std::endl;
+
         for (int printingIndex = 0; printingIndex < NUM_PLAYERS; printingIndex++)
         {
             std::cout << "Score for " << this->players[printingIndex]->getName() << ": " << this->players[printingIndex]->getScore() << std::endl;
@@ -207,10 +207,10 @@ bool GameLoop::mainLoop()
         bool validInput = false;
         bool repeatTurn = false;
 
-        bingoCheck = 0;         //int for bingo check
+        bingoCheck = 0; // int for bingo check
 
         while ((!validInput) || repeatTurn)
-        {   
+        {
 
             std::vector<std::string> command = splitString(userInput(), ' ');
 
@@ -221,12 +221,14 @@ bool GameLoop::mainLoop()
             {
                 validInput = this->placeTile(command, currentPlayer, bingoCheck);
 
-                //if there has been a pass before then reset the passCount
-                if (currentPlayer->passCount>0){
-                    currentPlayer->passCount=0;
+                // if there has been a pass before then reset the passCount
+                if (currentPlayer->passCount > 0)
+                {
+                    currentPlayer->passCount = 0;
                 }
                 // if there is an invalid command then restart the bingo count from the next set of place command
-                if (!validInput){
+                if (!validInput)
+                {
                     bingoCheck = 0;
                 }
             }
@@ -234,20 +236,22 @@ bool GameLoop::mainLoop()
             {
                 validInput = this->replaceTile(command, currentPlayer);
 
-                //if there has been a pass before then reset the passCount
-                if (currentPlayer->passCount>0){
-                    currentPlayer->passCount=0;
+                // if there has been a pass before then reset the passCount
+                if (currentPlayer->passCount > 0)
+                {
+                    currentPlayer->passCount = 0;
                 }
             }
             else if (commandType == "pass")
             {
                 validInput = true;
-                
-                //Increment the player's pass count.
+
+                // Increment the player's pass count.
                 ++(currentPlayer->passCount);
 
                 // If the player has passed twice, terminate the game!
-                if (bag->getlength()==0 && currentPlayer->passCount==2){
+                if (bag->getlength() == 0 && currentPlayer->passCount == 2)
+                {
                     terminate = true;
                     endOfGame = true;
                 }
@@ -279,39 +283,44 @@ bool GameLoop::mainLoop()
             }
         }
 
-        //if bag is empty and the player either has no tile in hand, then end the game
+        // if bag is empty and the player either has no tile in hand, then end the game
         bool bagIsEmpty = (bag->getlength() == 0);
         bool playerHasNoTiles = (currentPlayer->getNumTilesinHand() == 0);
-        if (bagIsEmpty && playerHasNoTiles){
+        if (bagIsEmpty && playerHasNoTiles)
+        {
             terminate = true;
             endOfGame = true;
         }
 
-        //if bingoCheck is 7, print "BINGO!" add binus 50 points
-        if (bingoCheck==7){
+        // if bingoCheck is 7, print "BINGO!" add binus 50 points
+        if (bingoCheck == 7)
+        {
             std::cout << std::endl;
             std::cout << "BINGO!!!" << std::endl;
             std::cout << std::endl;
             currentPlayer->addScore(50);
         }
-
     }
 
-    if (endOfGame==true){
+    if (endOfGame == true)
+    {
         std::cout << "Game over" << std::endl;
         std::cout << "Score for " << players[0]->getName() << ": " << players[0]->getScore() << std::endl;
         std::cout << "Score for " << players[1]->getName() << ": " << players[1]->getScore() << std::endl;
-        if (players[0]->getScore() > players[1]->getScore()){
+        if (players[0]->getScore() > players[1]->getScore())
+        {
             std::cout << players[0]->getName() << " won!" << std::endl;
         }
-        else if (players[1]->getScore() > players[0]->getScore()){
+        else if (players[1]->getScore() > players[0]->getScore())
+        {
             std::cout << "Player " << players[1]->getName() << " won!" << std::endl;
         }
-        else{
+        else
+        {
             std::cout << "Game drawn!" << std::endl;
         }
     }
-    
+
     return endOfGame;
 }
 
@@ -367,7 +376,7 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
         {
             isSuccessful = false;
         }
-        
+
         // The input is valid. Now to parse and process
         else
         {
@@ -392,7 +401,7 @@ bool sortingTileIntComparison(PlacedTile i, PlacedTile j)
     return std::get<2>(i) < std::get<2>(j);
 }
 
-bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<Player> currentPlayer, int& bingo)
+bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<Player> currentPlayer, int &bingo)
 {
     bool isSuccessful = true;
     bool isDone = false;
@@ -405,7 +414,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 
     // If the first command is invalid, return to the main turn loop
     while (isSuccessful && !isDone)
-    {   
+    {
         ++bingo;
         // Once we have entered the placement loop, if an invalid command is entered,
         // ask for a valid one and do not return to the main loop until done
@@ -518,9 +527,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
         std::tuple<char, int> endTuple = {std::get<1>(placedTiles[placedTiles.size() - 1]), std::get<2>(placedTiles[placedTiles.size() - 1])};
 
         isSuccessful = isAdjacent(startTuple, endTuple);
-
     }
-    
 
     if (isSuccessful)
     {
@@ -593,16 +600,18 @@ bool GameLoop::replaceTile(std::vector<std::string> initialCommand, std::shared_
                 isSuccessful = false;
             }
             else
-            {   
-                if (bag->getlength()!=0){
+            {
+                if (bag->getlength() != 0)
+                {
                     // Move the tile back to the bag.
                     this->bag->addTile(tileToReplace);
                     currentPlayer->drawTile(this->bag->drawTile());
-                }else{
+                }
+                else
+                {
                     std::cout << "Bag is empty!" << std::endl;
                     isSuccessful = false;
                 }
-
             }
         }
     }
@@ -620,7 +629,6 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand)
 
         outfile.open("saves/" + filename + ".txt");
 
-        
         for (long unsigned int i = 0; i < players.size(); i++)
         {
             std::shared_ptr<Player> player = players.at(i);
@@ -654,11 +662,10 @@ bool GameLoop::saveGame(std::vector<std::string> initialCommand)
 
 bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> endPos)
 {
-    //Need to take perameter of position of all placed tiles.
-    //Then check all tiles directly adjecent to placed tiles.
-    //If any adjacent tiles have tiles present, if they do return true.
-    //Else if first turn of the game make sure word is placed center of board.
-
+    // Need to take perameter of position of all placed tiles.
+    // Then check all tiles directly adjecent to placed tiles.
+    // If any adjacent tiles have tiles present, if they do return true.
+    // Else if first turn of the game make sure word is placed center of board.
 
     bool validWord = false;
 
@@ -667,51 +674,55 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
     char endChar = std::get<0>(endPos);
     int endInt = std::get<1>(endPos);
     std::vector<std::tuple<char, int>> toCheck;
-    
-    
-    
-    
-    //If all tiles placed ar in a horizontal line (Same character val)
+
+    std::cout << startChar << std::endl;
+    std::cout << startInt << std::endl;
+    std::cout << endChar << std::endl;
+    std::cout << endInt << std::endl;
+
+    // If all tiles placed ar in a horizontal line (Same character val)
     if (startChar == endChar)
     {
-        std::cout << "samechar" << std::endl;//debugging
+        std::cout << "samechar" << std::endl; // debugging
         // If the center tile is empty and word will be placed there.
-        if (this->board.getTile('H', 8)->letter == 0 && startChar == 'H' && startInt <= 8 && endInt >= 8){
-            if (startInt != endInt)
+        if (this->board.getTile('H', 8)->letter == 0)
+        {
+            std::cout << "checking" << std::endl;
+            if (startInt != endInt && startChar == 'H' && startInt <= 7 && endInt >= 7)
             {
                 validWord = true;
                 std::cout << "samechar center" << std::endl;
             }
-            
-        }else{
+        }
+        else
+        {
 
-            //If tile is on an edge, we should not check off
-            //the surrounding edges for previously placed tiles.
+            // If tile is on an edge, we should not check off
+            // the surrounding edges for previously placed tiles.
             if (startInt > 1)
             {
-                //Add tile to the left of the word to the list of tiles to check.
-                // std::cout << "startInt 1" << std::endl;
+                // Add tile to the left of the word to the list of tiles to check.
+                //  std::cout << "startInt 1" << std::endl;
                 std::tuple<char, int> tupleToInsert = {startChar, startInt - 1};
                 toCheck.push_back(tupleToInsert);
             }
             // std::cout << "outof startint1" << std::endl;
-            
+
             if (endInt < 15)
             {
-                //Add tile to right of word to list of tiles to check.
+                // Add tile to right of word to list of tiles to check.
                 std::tuple<char, int> tupleToInsert = {startChar, endInt + 1};
                 toCheck.push_back(tupleToInsert);
             }
-            
 
             for (int i = startInt; i <= endInt; i++)
             {
-                //Same goes here, if tile is on an edge, we should not check off
-                //the surrounding edges for previously placed tiles.
+                // Same goes here, if tile is on an edge, we should not check off
+                // the surrounding edges for previously placed tiles.
                 if (startChar > 'A')
                 {
                     // std::cout << "samechar 1" << std::endl;
-                    //Add tiles above word to check.
+                    // Add tiles above word to check.
                     std::tuple<char, int> tupleToInsert = {startChar - 1, i};
                     toCheck.push_back(tupleToInsert);
                 }
@@ -719,68 +730,71 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
 
                 if (endChar < 'O')
                 {
-                    //Add tiles below to check.
+                    // Add tiles below to check.
                     std::tuple<char, int> tupleToInsert = {startChar + 1, i};
                     toCheck.push_back(tupleToInsert);
                 }
             }
         }
-        
-    }else{
+    }
+    else
+    {
         // std::cout << "sameint" << std::endl;
-        if (this->board.getTile('H', 8)->letter == 0 && startInt == 8 && startChar <= 'H' && endChar >= 'H'){          
-            validWord = true;
-        }else{
+        if (this->board.getTile('H', 8)->letter == 0)
+        {
+            if (startInt == 7 && startChar <= 'H' && endChar >= 'H')
+            {
+
+                validWord = true;
+            }
+        }
+        else
+        {
             // std::cout << "sameint center" << std::endl;
             // More checking of edges
             if (startChar > 'A')
             {
-                //Add tile above word to list to check.
+                // Add tile above word to list to check.
                 std::tuple<char, int> tupleToInsert = {startChar - 1, startInt};
                 toCheck.push_back(tupleToInsert);
             }
-            
-            
+
             if (endChar < 'O')
             {
-                //Add tile below word to list to check.
+                // Add tile below word to list to check.
                 std::tuple<char, int> tupleToInsert = {startChar + 1, endInt};
                 toCheck.push_back(tupleToInsert);
             }
-            
-            
+
             for (int i = startChar; i <= endChar; i++)
             {
                 // Still checking edges.
                 if (startInt > 1)
                 {
-                    //Add tiles to left to check
+                    // Add tiles to left to check
                     std::tuple<char, int> tupleToInsert = {i, startInt - 1};
                     toCheck.push_back(tupleToInsert);
                 }
 
                 if (startInt < 15)
                 {
-                    //Add tiles to right to check.
+                    // Add tiles to right to check.
                     std::tuple<char, int> tupleToInsert = {i, startInt + 1};
                     toCheck.push_back(tupleToInsert);
                 }
             }
         }
     }
-    
+
     for (std::tuple<char, int> tileToCheck : toCheck)
     {
         std::cout << std::get<0>(tileToCheck) << std::endl;
         std::cout << std::get<1>(tileToCheck) << std::endl;
-
     }
-    
-
 
     std::cout << "out of list making loop" << std::endl;
-    //If the word is not in the center and the list is not empty.
-    if(!validWord && toCheck.size() > 0)
+    // If the word is not in the center and the list is not empty.
+    if (!validWord && toCheck.size() > 0)
     {
         std::cout << "toCheck entered" << std::endl;
         for (std::tuple<char, int> tileToCheck : toCheck)
@@ -793,15 +807,10 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
                 validWord = true;
             }
             std::cout << "after the if statement" << std::endl;
-            
-        
         }
-        
     }
-    
-    
+
     return validWord;
-    
 }
 // Accidentally made this twice due to miscommunication within the team.
 // This is an alternate version that is designed to allow for multiple player
