@@ -704,23 +704,23 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
     int endInt = std::get<1>(endPos);
     std::vector<std::tuple<char, int>> toCheck;
 
-    std::cout << startChar << std::endl;
-    std::cout << startInt << std::endl;
-    std::cout << endChar << std::endl;
-    std::cout << endInt << std::endl;
+    // std::cout << startChar << std::endl;
+    // std::cout << startInt << std::endl;
+    // std::cout << endChar << std::endl;
+    // std::cout << endInt << std::endl;
 
     // If all tiles placed ar in a horizontal line (Same character val)
     if (startChar == endChar)
     {
-        std::cout << "samechar" << std::endl; // debugging
+        // std::cout << "samechar" << std::endl; // debugging
         // If the center tile is empty and word will be placed there.
         if (this->board.getTile('H', 8)->letter == 0)
         {
-            std::cout << "checking" << std::endl;
+            // std::cout << "checking" << std::endl;
             if (startInt != endInt && startChar == 'H' && startInt <= 7 && endInt >= 7)
             {
                 validWord = true;
-                std::cout << "samechar center" << std::endl;
+                // std::cout << "samechar center" << std::endl;
             }
         }
         else
@@ -805,7 +805,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
                     toCheck.push_back(tupleToInsert);
                 }
 
-                if (startInt < 15)
+                if (startInt < 14)
                 {
                     // Add tiles to right to check.
                     std::tuple<char, int> tupleToInsert = {i, startInt + 1};
@@ -815,27 +815,27 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
         }
     }
 
-    for (std::tuple<char, int> tileToCheck : toCheck)
-    {
-        std::cout << std::get<0>(tileToCheck) << std::endl;
-        std::cout << std::get<1>(tileToCheck) << std::endl;
-    }
+    // for (std::tuple<char, int> tileToCheck : toCheck)
+    // {
+    //     std::cout << std::get<0>(tileToCheck) << std::endl;
+    //     std::cout << std::get<1>(tileToCheck) << std::endl;
+    // }
 
-    std::cout << "out of list making loop" << std::endl;
+    // std::cout << "out of list making loop" << std::endl;
     // If the word is not in the center and the list is not empty.
     if (!validWord && toCheck.size() > 0)
     {
-        std::cout << "toCheck entered" << std::endl;
+        // std::cout << "toCheck entered" << std::endl;
         for (std::tuple<char, int> tileToCheck : toCheck)
         {
-            std::cout << "for loop entered" << std::endl;
+            // std::cout << "for loop entered" << std::endl;
             // For each tile surrounding the word, if it is not empty, the word placement is valid.
             if (this->board.getTile(std::get<0>(tileToCheck), std::get<1>(tileToCheck))->letter != 0)
             {
-                std::cout << "in the if statement" << std::endl;
+                // std::cout << "in the if statement" << std::endl;
                 validWord = true;
             }
-            std::cout << "after the if statement" << std::endl;
+            // std::cout << "after the if statement" << std::endl;
         }
     }
 
