@@ -520,11 +520,12 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
         isSuccessful = currentPlayer->getHand()->getNumberOfTilesWithLetter(i) >= total;
     }
 
+    std::cout << isSuccessful << std::endl;
     if (isSuccessful)
     {
         for (long unsigned int i = 0; i < placedTiles.size() && isSuccessful; i++)
         {
-            for (long unsigned int j = i; j < placedTiles.size() && isSuccessful; j++)
+            for (long unsigned int j = i + 1; j < placedTiles.size() && isSuccessful; j++)
             {
                 if (std::get<1>(placedTiles[i]) == std::get<1>(placedTiles[j]) && std::get<2>(placedTiles[i]) == std::get<2>(placedTiles[j]))
                 {
@@ -533,6 +534,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
             }
         }
     }
+    std::cout << isSuccessful << std::endl;
 
     if (isSuccessful)
     {
