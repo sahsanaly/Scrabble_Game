@@ -534,7 +534,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
         isSuccessful = currentPlayer->getHand()->getNumberOfTilesWithLetter(i) >= total;
     }
 
-    std::cout << isSuccessful << std::endl;
+    // Check that no placed tiles are being placed on the same coordinate
     if (isSuccessful)
     {
         for (long unsigned int i = 0; i < placedTiles.size() && isSuccessful; i++)
@@ -548,7 +548,6 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
             }
         }
     }
-    std::cout << isSuccessful << std::endl;
 
     if (isSuccessful)
     {
@@ -729,7 +728,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
 
             // If tile is on an edge, we should not check off
             // the surrounding edges for previously placed tiles.
-            if (startInt > 1)
+            if (startInt > 0)
             {
                 // Add tile to the left of the word to the list of tiles to check.
                 //  std::cout << "startInt 1" << std::endl;
@@ -738,7 +737,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
             }
             // std::cout << "outof startint1" << std::endl;
 
-            if (endInt < 15)
+            if (endInt < 14)
             {
                 // Add tile to right of word to list of tiles to check.
                 std::tuple<char, int> tupleToInsert = {startChar, endInt + 1};
