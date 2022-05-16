@@ -9,7 +9,7 @@
 
 GameLoop::GameLoop()
 {
-    std::cout << "Starting a new game" << std::endl;
+    std::cout << "Starting a New Game" << std::endl;
     std::cout << std::endl;
 
     bag = std::make_shared<Bag>();
@@ -54,8 +54,7 @@ GameLoop::GameLoop()
         std::cout << std::endl;
     }
 
-    std::cout << "Let's Play!" << std::endl
-              << std::endl;
+    std::cout << "Let's Play!" << std::endl;
 
     // Set up the bag
     //                        A, B, C, D,  E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
@@ -179,17 +178,21 @@ GameLoop::~GameLoop()
     this->players.clear();
 }
 
-void GameLoop::mainLoop()
-{
-    bool terminate = false;
+bool GameLoop::mainLoop()
+{   
+    bool endOfGame = false;     //boolean for the end of game
+    bool terminate = false;     //termination of the game
+    int bingoCheck;             //int check for the bingo, if it's 7 then output bingo!
     while (!terminate)
     {
-        std::cout << "In Mainloop" << std::endl;
-        std::cout << currentPlayerIndex << std::endl;
+        // std::cout << "In Mainloop" << std::endl;
+        // std::cout << currentPlayerIndex << std::endl;
         std::shared_ptr<Player> currentPlayer = this->players[currentPlayerIndex];
 
         // Output prompt
-        std::cout << currentPlayer->getName() << ", it's your turn" << std::endl;
+        std::cout << std::endl 
+        << currentPlayer->getName() << ", it's your turn" << std::endl;
+        
         for (int printingIndex = 0; printingIndex < NUM_PLAYERS; printingIndex++)
         {
             std::cout << "Score for " << this->players[printingIndex]->getName() << ": " << this->players[printingIndex]->getScore() << std::endl;
@@ -197,14 +200,18 @@ void GameLoop::mainLoop()
         std::cout << this->board.convertToString() << std::endl;
         std::cout << "Your hand is" << std::endl;
         currentPlayer->printHand();
+        std::cout << std::endl;
 
         // Store the validness of the input into a seperate variable,
         // since all code paths have the possibility to be incorrect.
         bool validInput = false;
         bool repeatTurn = false;
 
+        bingoCheck = 0;         //int for bingo check
+
         while ((!validInput) || repeatTurn)
-        {
+        {   
+
             std::vector<std::string> command = splitString(userInput(), ' ');
 
             std::string commandType = command[0];
@@ -212,18 +219,38 @@ void GameLoop::mainLoop()
 
             if (commandType == "place")
             {
-                validInput = this->placeTile(command, currentPlayer);
+                validInput = this->placeTile(command, currentPlayer, bingoCheck);
+
+                //if there has been a pass before then reset the passCount
+                if (currentPlayer->passCount>0){
+                    currentPlayer->passCount=0;
+                }
+                // if there is an invalid command then restart the bingo count from the next set of place command
+                if (!validInput){
+                    bingoCheck = 0;
+                }
             }
             else if (commandType == "replace")
             {
                 validInput = this->replaceTile(command, currentPlayer);
+
+                //if there has been a pass before then reset the passCount
+                if (currentPlayer->passCount>0){
+                    currentPlayer->passCount=0;
+                }
             }
             else if (commandType == "pass")
             {
                 validInput = true;
-                // Passing is just doing nothing, so we do nothing
-                // We will eventually need to track when a player passes,
-                // since the game ends if a player passes twice
+                
+                //Increment the player's pass count.
+                ++(currentPlayer->passCount);
+
+                // If the player has passed twice, terminate the game!
+                if (bag->getlength()==0 && currentPlayer->passCount==2){
+                    terminate = true;
+                    endOfGame = true;
+                }
             }
             else if (commandType == "save")
             {
@@ -251,7 +278,41 @@ void GameLoop::mainLoop()
                 currentPlayerIndex = (currentPlayerIndex + 1) % NUM_PLAYERS;
             }
         }
+
+        //if bag is empty and the player either has no tile in hand, then end the game
+        bool bagIsEmpty = (bag->getlength() == 0);
+        bool playerHasNoTiles = (currentPlayer->getNumTilesinHand() == 0);
+        if (bagIsEmpty && playerHasNoTiles){
+            terminate = true;
+            endOfGame = true;
+        }
+
+        //if bingoCheck is 7, print "BINGO!" add binus 50 points
+        if (bingoCheck==7){
+            std::cout << std::endl;
+            std::cout << "BINGO!!!" << std::endl;
+            std::cout << std::endl;
+            currentPlayer->addScore(50);
+        }
+
     }
+
+    if (endOfGame==true){
+        std::cout << "Game over" << std::endl;
+        std::cout << "Score for " << players[0]->getName() << ": " << players[0]->getScore() << std::endl;
+        std::cout << "Score for " << players[1]->getName() << ": " << players[1]->getScore() << std::endl;
+        if (players[0]->getScore() > players[1]->getScore()){
+            std::cout << players[0]->getName() << " won!" << std::endl;
+        }
+        else if (players[1]->getScore() > players[0]->getScore()){
+            std::cout << "Player " << players[1]->getName() << " won!" << std::endl;
+        }
+        else{
+            std::cout << "Game drawn!" << std::endl;
+        }
+    }
+    
+    return endOfGame;
 }
 
 // Another utility function to encapsulate input processing
@@ -268,10 +329,6 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
         if (initialInput.size() == 2 && initialInput[0] == "place" && initialInput[1] == "Done")
         {
             done = true;
-            for (long unsigned int i = 0; i < players.size(); i++)
-            {
-                std::cout << std::string(*players.at(i)) << std::endl;
-            }
         }
         else
         {
@@ -310,14 +367,7 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
         {
             isSuccessful = false;
         }
-        // If the fourth word has a third character, it must be a number
-        else if (initialInput[3].size() == 3)
-        {
-            if (!isdigit(initialInput[1][2]))
-            {
-                isSuccessful = false;
-            }
-        }
+        
         // The input is valid. Now to parse and process
         else
         {
@@ -342,7 +392,7 @@ bool sortingTileIntComparison(PlacedTile i, PlacedTile j)
     return std::get<2>(i) < std::get<2>(j);
 }
 
-bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<Player> currentPlayer)
+bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<Player> currentPlayer, int& bingo)
 {
     bool isSuccessful = true;
     bool isDone = false;
@@ -355,7 +405,8 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 
     // If the first command is invalid, return to the main turn loop
     while (isSuccessful && !isDone)
-    {
+    {   
+        ++bingo;
         // Once we have entered the placement loop, if an invalid command is entered,
         // ask for a valid one and do not return to the main loop until done
         std::vector<std::string> initialInput = splitString(userInput(), ' ');
@@ -363,6 +414,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
         if (!isValidInput)
         {
             std::cout << "Please enter a valid placement command" << std::endl;
+            --bingo;
         }
     }
 
@@ -370,6 +422,7 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
     // These variables are placed outside the block so that they can be used later on
     bool allAreSameLetter = true;
     bool allAreSameNumber = true;
+
     if (isSuccessful)
     {
         // Determine whether the tiles are in a line.
@@ -381,6 +434,12 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
         for (int i = 0; (std::size_t)i < placedTiles.size() && allAreSameNumber; i++)
         {
             allAreSameNumber = std::get<2>(placedTiles[i]) == std::get<2>(placedTiles[0]);
+        }
+
+        if (placedTiles.size() == 0)
+        {
+            allAreSameLetter = false;
+            allAreSameNumber = false;
         }
 
         // If the tiles are in a line, check there are no gaps between the tiles
@@ -534,10 +593,16 @@ bool GameLoop::replaceTile(std::vector<std::string> initialCommand, std::shared_
                 isSuccessful = false;
             }
             else
-            {
-                // Move the tile back to the bag.
-                this->bag->addTile(tileToReplace);
-                currentPlayer->drawTile(this->bag->drawTile());
+            {   
+                if (bag->getlength()!=0){
+                    // Move the tile back to the bag.
+                    this->bag->addTile(tileToReplace);
+                    currentPlayer->drawTile(this->bag->drawTile());
+                }else{
+                    std::cout << "Bag is empty!" << std::endl;
+                    isSuccessful = false;
+                }
+
             }
         }
     }

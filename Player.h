@@ -31,6 +31,9 @@ public:
    // Return the player's score.
    int getScore();
 
+   //Return number of tiles in hand
+   int getNumTilesinHand();
+
    // Prints the hand for reading.
    void printHand();
 
@@ -39,6 +42,8 @@ public:
 
    // Get the name of the player.
    std::string getName();
+
+   int passCount = 0;   //count of consecutive passes by a player
 
 private:
    // Player's Hand

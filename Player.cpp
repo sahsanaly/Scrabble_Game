@@ -50,6 +50,12 @@ std::shared_ptr<Tile> Player::takeTile(char letter)
     return tileToPlace;
 }
 
+int Player::getNumTilesinHand(){
+
+    return this->hand->getHandLength();
+}
+
+
 std::shared_ptr<Hand> Player::getHand()
 {
     return this->hand;

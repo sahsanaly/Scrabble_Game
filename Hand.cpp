@@ -23,7 +23,13 @@ Hand::~Hand()
 
 void Hand::addTile(std::shared_ptr<Tile> tile)
 {
-    tilesInHand->insert(tilesInHand->getLength(), tile);
+    bool tileNotNull = (tile->letter != 0);
+    if (tileNotNull)
+    {
+        // std::cout << "Place tile: " << std::string(*tile) << std::endl;
+        tilesInHand->insert(tilesInHand->getLength(), tile);
+    }
+    
     return;
 }
 
@@ -40,6 +46,11 @@ void Hand::removeTile(std::shared_ptr<Tile> tile)
 {
     removeTile(tile->letter);
     return;
+}
+
+int Hand::getHandLength(){
+
+    return this->tilesInHand->getLength();        //number of tiles in hand
 }
 
 std::shared_ptr<Tile> Hand::getTile(Letter letter)

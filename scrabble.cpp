@@ -16,7 +16,7 @@ int main(void)
    std::cout << "-------------------" << std::endl;
 
    bool terminate = false;
-
+   bool endOFGame = false;
    // Main loop
    while (!terminate)
    {
@@ -30,7 +30,8 @@ int main(void)
              << "2. Load Game" << std::endl
              << "3. Credits (Show student information)" << std::endl
              << "4. Quit" << std::endl
-             << "5. DEBUG: Player + Hand Test" << std::endl;
+             << "5. DEBUG: Player + Hand Test" << std::endl
+             << std::endl;
 
          // Get user input
          std::string rawUserInput;
@@ -51,7 +52,11 @@ int main(void)
          if (intUserInput == 1)
          {
             GameLoop game;
-            game.mainLoop();
+            endOFGame = game.mainLoop();
+            //if endOFGame is true, terminate the game in special case of Ending the Game
+            if (endOFGame==true){
+               terminate=true;
+            }
          }
          else if (intUserInput == 2)
          {
@@ -69,13 +74,14 @@ int main(void)
             // Use the
             catch (std::exception &unused)
             {
-               std::cout << "That savefile is invalid. Please select a valid savefile" << std::endl;
+               std::cout << std::endl << "That savefile is invalid. Please select a valid savefile" << std::endl
+                  << std::endl;
                successfulLoad = false;
             }
 
             if (successfulLoad)
             {
-               std::cout << "Starting mainLoop" << std::endl;
+               // std::cout << "Starting mainLoop" << std::endl;
                game->mainLoop();
             }
          }
@@ -104,7 +110,6 @@ int main(void)
          else if (intUserInput == 4)
          {
             // Quit
-            std::cout << "Goodbye" << std::endl;
             terminate = true;
          }
          else if (intUserInput == 5)
@@ -145,14 +150,18 @@ int main(void)
          {
             std::cout << "Invalid input, please input a valid number between 1-4" << std::endl;
          }
-
-         std::cout << std::endl;
       }
       // If the user ever enters an EOF character, execution will jump back to here and terminate
       catch (eof_exception &unused)
       {
          terminate = true;
       }
+
+      if (terminate)
+      {
+         std::cout << "Goodbye!" << std::endl;
+      }
+
    }
 
    return EXIT_SUCCESS;

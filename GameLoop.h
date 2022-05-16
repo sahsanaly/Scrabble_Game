@@ -23,7 +23,7 @@ public:
     //      A player wins
     //      The players quit early
     //      The game is saved to a file
-    void mainLoop();
+    bool mainLoop();
 
 private:
     // Making these pointers allows them to be initialised in the constructor, rather than before.
@@ -39,7 +39,7 @@ private:
     // Check the placed tiles to ensure they meet placing rules
     // Put tiles onto the board if they meet placing rules
     // If the tiles breach placing rules, return false, otherwise return true
-    bool placeTile(std::vector<std::string> initialCommand, std::shared_ptr<Player> currentPlayer);
+    bool placeTile(std::vector<std::string> initialCommand, std::shared_ptr<Player> currentPlayer, int& bingoCheck);
 
     // Since some of the logic in placeTile needs to be performed in several
     // logical places, we split some of the code into a seperate function to

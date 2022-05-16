@@ -51,7 +51,7 @@ std::vector<std::shared_ptr<Tile>> Board::getWord(char coord1, int coord2, bool 
 
         // Get the character(s) at, and in front the coords
         intIndex = coord2;
-        while (intIndex <= BOARD_SIZE && this->getTile(coord1, intIndex)->letter != 0)
+        while (intIndex < BOARD_SIZE && this->getTile(coord1, intIndex)->letter != 0)
         {
             // This is inefficient, but it ensures that the tiles will be in the correct order
             returnValue.push_back(this->getTile(coord1, intIndex));
@@ -72,7 +72,7 @@ std::vector<std::shared_ptr<Tile>> Board::getWord(char coord1, int coord2, bool 
 
         // Get the character(s) at, and in front the coords
         charIndex = coord1;
-        while (charIndex <= 65 + BOARD_SIZE && this->getTile(charIndex, coord2)->letter != 0)
+        while (charIndex < 65 + BOARD_SIZE && this->getTile(charIndex, coord2)->letter != 0)
         {
             // This is inefficient, but it ensures that the tiles will be in the correct order
             returnValue.push_back(this->getTile(charIndex, coord2));

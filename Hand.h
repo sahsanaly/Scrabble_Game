@@ -22,6 +22,9 @@ public:
    // Remove tile from hand
    void removeTile(std::shared_ptr<Tile> tile);
 
+   // Return the number of tiles in hand
+   int getHandLength();
+
    // Find the first tile with the desired letter and return its pointer. Return NULL if not found.
    std::shared_ptr<Tile> getTile(Letter letter);
 
@@ -40,6 +43,7 @@ public:
 private:
    // List of Tiles in Hand
    std::shared_ptr<LinkedList> tilesInHand;
+
 };
 
 #endif // ASSIGN2_HAND_H
