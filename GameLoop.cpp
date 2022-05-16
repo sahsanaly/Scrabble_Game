@@ -801,7 +801,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
         {
             std::cout << "for loop entered" << std::endl;
             // For each tile surrounding the word, if it is not empty, the word placement is valid.
-            if (this->board.getTile(std::get<0>(tileToCheck), std::get<1>(tileToCheck)) != 0)
+            if (this->board.getTile(std::get<0>(tileToCheck), std::get<1>(tileToCheck))->letter != 0)
             {
                 std::cout << "in the if statement" << std::endl;
                 validWord = true;
