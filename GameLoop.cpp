@@ -383,8 +383,10 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
             char letterToPlace = initialInput[1][0];
             char coord1 = initialInput[3][0];
             int coord2 = std::stoi(initialInput[3].substr(1));
+            
+            int coord2Index = coord2 - 1;
 
-            if (coord2 > BOARD_SIZE)
+            if (coord2Index >= BOARD_SIZE)
             {
                 isSuccessful = false;
             }
@@ -394,7 +396,7 @@ bool GameLoop::processPlacementInput(std::vector<std::string> initialInput, std:
             }
             else
             {
-                PlacedTile tupleToInsert = {letterToPlace, coord1, coord2 - 1};
+                PlacedTile tupleToInsert = {letterToPlace, coord1, coord2Index};
                 placedTiles.push_back(tupleToInsert);
             }
         }
