@@ -522,6 +522,20 @@ bool GameLoop::placeTile(std::vector<std::string> initialInput, std::shared_ptr<
 
     if (isSuccessful)
     {
+        for (long unsigned int i = 0; i < placedTiles.size() && isSuccessful; i++)
+        {
+            for (long unsigned int j = i; j < placedTiles.size() && isSuccessful; j++)
+            {
+                if (std::get<1>(placedTiles[i]) == std::get<1>(placedTiles[j]) && std::get<2>(placedTiles[i]) == std::get<2>(placedTiles[j]))
+                {
+                    isSuccessful = false;
+                }
+            }
+        }
+    }
+
+    if (isSuccessful)
+    {
         // Check that tiles are adjacent to other tiles or in the center of the board.
         std::tuple<char, int> startTuple = {std::get<1>(placedTiles[0]), std::get<2>(placedTiles[0])};
         std::tuple<char, int> endTuple = {std::get<1>(placedTiles[placedTiles.size() - 1]), std::get<2>(placedTiles[placedTiles.size() - 1])};
