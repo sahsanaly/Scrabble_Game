@@ -302,6 +302,7 @@ bool GameLoop::mainLoop()
 
     if (endOfGame == true)
     {
+        std::cout << this->board.convertToString() << std::endl;
         std::cout << "Game over" << std::endl;
         std::cout << "Score for " << players[0]->getName() << ": " << players[0]->getScore() << std::endl;
         std::cout << "Score for " << players[1]->getName() << ": " << players[1]->getScore() << std::endl;
