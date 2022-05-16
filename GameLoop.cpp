@@ -676,14 +676,18 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
     {
         std::cout << "samechar" << std::endl;//debugging
         // If the center tile is empty and word will be placed there.
-        if (this->board.getTile('H', 8) == 0 /*&& startChar == 'H' && startInt <= 8 && endInt >= 8*/){
-            validWord = true;
-            std::cout << "samechar center" << std::endl;
+        if (this->board.getTile('H', 8)->letter == 0 && startChar == 'H' && startInt <= 8 && endInt >= 8){
+            if (startInt != endInt)
+            {
+                validWord = true;
+                std::cout << "samechar center" << std::endl;
+            }
+            
         }else{
 
             //If tile is on an edge, we should not check off
             //the surrounding edges for previously placed tiles.
-            if (startInt != 1)
+            if (startInt > 1)
             {
                 //Add tile to the left of the word to the list of tiles to check.
                 // std::cout << "startInt 1" << std::endl;
@@ -692,7 +696,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
             }
             // std::cout << "outof startint1" << std::endl;
             
-            if (endInt != 15)
+            if (endInt < 15)
             {
                 //Add tile to right of word to list of tiles to check.
                 std::tuple<char, int> tupleToInsert = {startChar, endInt + 1};
@@ -704,7 +708,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
             {
                 //Same goes here, if tile is on an edge, we should not check off
                 //the surrounding edges for previously placed tiles.
-                if (startChar != 'A')
+                if (startChar > 'A')
                 {
                     // std::cout << "samechar 1" << std::endl;
                     //Add tiles above word to check.
@@ -713,7 +717,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
                 }
                 // std::cout << "out of samechar1" << std::endl;
 
-                if (endChar != 'O')
+                if (endChar < 'O')
                 {
                     //Add tiles below to check.
                     std::tuple<char, int> tupleToInsert = {startChar + 1, i};
@@ -724,12 +728,12 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
         
     }else{
         // std::cout << "sameint" << std::endl;
-        if (this->board.getTile('H', 8) == 0 && startInt == 8 && startChar <= 'H' && endChar >= 'H'){
+        if (this->board.getTile('H', 8)->letter == 0 && startInt == 8 && startChar <= 'H' && endChar >= 'H'){          
             validWord = true;
         }else{
             // std::cout << "sameint center" << std::endl;
             // More checking of edges
-            if (startChar != 'A')
+            if (startChar > 'A')
             {
                 //Add tile above word to list to check.
                 std::tuple<char, int> tupleToInsert = {startChar - 1, startInt};
@@ -737,7 +741,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
             }
             
             
-            if (endChar != 'O')
+            if (endChar < 'O')
             {
                 //Add tile below word to list to check.
                 std::tuple<char, int> tupleToInsert = {startChar + 1, endInt};
@@ -748,14 +752,14 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
             for (int i = startChar; i <= endChar; i++)
             {
                 // Still checking edges.
-                if (startInt != 1)
+                if (startInt > 1)
                 {
                     //Add tiles to left to check
                     std::tuple<char, int> tupleToInsert = {i, startInt - 1};
                     toCheck.push_back(tupleToInsert);
                 }
 
-                if (startInt != 15)
+                if (startInt < 15)
                 {
                     //Add tiles to right to check.
                     std::tuple<char, int> tupleToInsert = {i, startInt + 1};
@@ -765,6 +769,15 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
         }
     }
     
+    for (std::tuple<char, int> tileToCheck : toCheck)
+    {
+        std::cout << std::get<0>(tileToCheck) << std::endl;
+        std::cout << std::get<1>(tileToCheck) << std::endl;
+
+    }
+    
+
+
     std::cout << "out of list making loop" << std::endl;
     //If the word is not in the center and the list is not empty.
     if(!validWord && toCheck.size() > 0)
@@ -780,7 +793,7 @@ bool GameLoop::isAdjacent(std::tuple<char, int> startPos, std::tuple<char, int> 
                 validWord = true;
             }
             std::cout << "after the if statement" << std::endl;
-            validWord = true;
+            
         
         }
         
